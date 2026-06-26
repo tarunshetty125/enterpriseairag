@@ -8,6 +8,8 @@ import {
   getDatasetStatus,
   getFeatureStoreStatus,
   getHealth,
+  getMLEvaluation,
+  getMLModels,
   getSystemHealth,
 } from "@/lib/api/platform";
 
@@ -48,6 +50,18 @@ export function usePlatformStatus() {
     refetchInterval: 30000,
   });
 
+  const mlModels = useQuery({
+    queryKey: ["platform", "ml-models"],
+    queryFn: getMLModels,
+    refetchInterval: 30000,
+  });
+
+  const mlEvaluation = useQuery({
+    queryKey: ["platform", "ml-evaluation"],
+    queryFn: getMLEvaluation,
+    refetchInterval: 30000,
+  });
+
   return {
     health,
     systemHealth,
@@ -55,5 +69,7 @@ export function usePlatformStatus() {
     datasetStatus,
     featureStoreStatus,
     dataQuality,
+    mlModels,
+    mlEvaluation,
   };
 }

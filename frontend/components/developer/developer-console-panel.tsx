@@ -1,11 +1,15 @@
 "use client";
 
 import {
+  Activity,
+  Brain,
   Database,
+  Gauge,
   Layers3,
   Server,
   Settings2,
   ShieldCheck,
+  Timer,
   Workflow,
 } from "lucide-react";
 
@@ -29,8 +33,16 @@ export function DeveloperConsolePanel() {
     datasetStatus,
     featureStoreStatus,
     dataQuality,
+    mlModels,
   } = usePlatformStatus();
   const sqlite = systemHealth.data?.components.find((item) => item.name === "sqlite");
+  const registeredModels = mlModels.data?.models ?? [];
+  const latestModel = registeredModels[0];
+  const activeModels = registeredModels.filter((model) => model.activeModel);
+  const predictionCount = registeredModels.reduce(
+    (total, model) => total + model.predictionCount,
+    0,
+  );
 
   const cards = [
     {
@@ -95,6 +107,42 @@ export function DeveloperConsolePanel() {
         datasetStatus.data?.latestIngestion?.message ??
         "Run ingestion from Dataset Management",
       icon: Server,
+    },
+    {
+      label: "Registered Models",
+      value: registeredModels.length,
+      detail: `${activeModels.length} active models`,
+      icon: Brain,
+    },
+    {
+      label: "Latest Training",
+      value: latestModel?.modelName ?? "No training",
+      detail: latestModel
+        ? new Date(latestModel.trainingDate).toLocaleString()
+        : "Train from Model Registry",
+      icon: Timer,
+    },
+    {
+      label: "Training Time",
+      value: latestModel
+        ? `${latestModel.trainingTimeMs.toFixed(1)} ms`
+        : "Unavailable",
+      detail: latestModel?.version ?? "No model artifact",
+      icon: Activity,
+    },
+    {
+      label: "Inference Time",
+      value: latestModel?.inferenceTimeMs
+        ? `${latestModel.inferenceTimeMs.toFixed(1)} ms`
+        : "Unavailable",
+      detail: `${predictionCount} logged predictions`,
+      icon: Gauge,
+    },
+    {
+      label: "Model Health",
+      value: activeModels.length >= 2 ? "Ready" : "Training needed",
+      detail: "Risk and segmentation active model coverage",
+      icon: ShieldCheck,
     },
   ];
 

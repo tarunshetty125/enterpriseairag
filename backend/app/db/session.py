@@ -7,7 +7,10 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import get_settings
 from app.db.base import Base
-from app.models import canonical  # noqa: F401
+from app.models import (
+    canonical,  # noqa: F401
+    ml,  # noqa: F401
+)
 
 settings = get_settings()
 settings.database.sqlite_path.parent.mkdir(parents=True, exist_ok=True)

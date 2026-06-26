@@ -6,7 +6,7 @@ Local, interview-ready AI platform foundation for a financial customer intellige
 
 This repository will evolve into an enterprise-style AI platform demonstrating machine learning, NLP, RAG, explainable AI, provider abstraction, and a modern React + FastAPI architecture.
 
-Phase 1 establishes the foundation only:
+Phase 1 establishes the foundation:
 
 - Next.js 15 frontend shell with TypeScript, Tailwind CSS, shadcn/ui conventions, TanStack Query, Axios, and Lucide icons.
 - FastAPI backend with versioned APIs, typed Pydantic Settings, SQLAlchemy 2.x, Alembic, SQLite initialization, and structured logging.
@@ -32,6 +32,11 @@ Phase 1 does not implement ML, NLP, RAG, AI providers, workflow logic, or busine
 
 Phase 2 adds the enterprise data foundation: public dataset ingestion, canonical schema, SQLite persistence, deterministic synthetic joins, data quality reporting, and a versioned feature store. It still does not implement ML predictions, AI providers, RAG, or LLM workflows.
 
+Phase 3 adds the enterprise machine learning platform: explicit model training,
+versioned artifacts, SQLite model registry, risk prediction, customer
+segmentation, evaluation metrics, prediction logging, and explainability. It
+still does not implement NLP, recommendations, AI providers, RAG, or chat.
+
 ## Folder Structure
 
 ```text
@@ -39,7 +44,7 @@ enterprise-ai-financial-platform/
   frontend/       # Next.js 15 App Router application
   backend/        # FastAPI application
   data/           # Raw, processed, and policy data folders
-  models/         # Future ML artifacts
+  models/         # Versioned local ML artifacts
   vectorstore/    # Future FAISS artifacts
   docs/           # Project documentation
   scripts/        # Future development scripts
@@ -74,6 +79,9 @@ frontend/app/
   dashboard/
   customers/
   analytics/
+  model-registry/
+  risk-prediction/
+  segmentation/
   assistant/
   developer-console/
   settings/
@@ -102,6 +110,10 @@ Backend:
 - SQLite
 - Pydantic Settings
 - Structured JSON logging
+- scikit-learn
+- pandas
+- numpy
+- joblib
 
 ## Setup Instructions
 
@@ -174,6 +186,18 @@ Only these versioned endpoints exist in Phase 1:
 - `GET /api/v1/customers/{id}/features`
 - `GET /api/v1/data-quality`
 - `GET /api/v1/feature-store/status`
+
+## Phase 3 API Surface
+
+- `POST /api/v1/ml/train/risk`
+- `POST /api/v1/ml/train/segmentation`
+- `GET /api/v1/ml/models`
+- `GET /api/v1/ml/models/{model}`
+- `POST /api/v1/ml/models/{model_id}/activate`
+- `POST /api/v1/ml/predict/risk`
+- `POST /api/v1/ml/predict/segment`
+- `GET /api/v1/ml/evaluation`
+- `GET /api/v1/ml/feature-importance`
 
 ## Roadmap
 

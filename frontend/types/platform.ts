@@ -178,3 +178,73 @@ export interface QualityReport {
   score: number;
   checks: QualityCheck[];
 }
+
+export interface ModelRegistryItem {
+  id: number;
+  modelName: string;
+  version: string;
+  algorithm: string;
+  trainingDate: string;
+  metrics: Record<string, unknown>;
+  accuracy: number | null;
+  precision: number | null;
+  recall: number | null;
+  f1: number | null;
+  featuresUsed: string[];
+  artifactPath: string;
+  datasetVersion: string;
+  featureVersion: string;
+  activeModel: boolean;
+  trainingTimeMs: number;
+  inferenceTimeMs: number | null;
+  trainingMetadata: Record<string, unknown>;
+  predictionCount: number;
+}
+
+export interface ModelRegistryResponse {
+  models: ModelRegistryItem[];
+}
+
+export interface TrainModelResponse {
+  model: ModelRegistryItem;
+  message: string;
+}
+
+export interface FeatureContribution {
+  name: string;
+  value: number | string | null;
+  importance: number;
+  description: string;
+}
+
+export interface RiskPredictionResponse {
+  customerId: string;
+  riskLevel: string;
+  confidence: number;
+  probabilities: Record<string, number>;
+  topFeatures: FeatureContribution[];
+  businessExplanation: string;
+  modelVersion: string;
+  inferenceTimeMs: number;
+}
+
+export interface SegmentPredictionResponse {
+  customerId: string;
+  segmentLabel: string;
+  confidence: number;
+  nearestDistance: number;
+  centroidSummary: Record<string, number>;
+  modelVersion: string;
+  inferenceTimeMs: number;
+}
+
+export interface MLEvaluationResponse {
+  risk: Record<string, unknown> | null;
+  segmentation: Record<string, unknown> | null;
+}
+
+export interface FeatureImportanceResponse {
+  modelName: string;
+  modelVersion: string;
+  features: FeatureContribution[];
+}

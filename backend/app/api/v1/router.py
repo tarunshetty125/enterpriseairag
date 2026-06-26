@@ -8,6 +8,7 @@ from app.api.v1 import (
     datasets,
     feature_store,
     health,
+    ml,
     settings,
     system_health,
 )
@@ -20,3 +21,4 @@ api_router.include_router(datasets.router)
 api_router.include_router(customers.router)
 api_router.include_router(data_quality.router)
 api_router.include_router(feature_store.router)
+api_router.include_router(ml.router)

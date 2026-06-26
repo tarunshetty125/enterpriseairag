@@ -113,6 +113,31 @@ class AISettings(BaseSettings):
     conversation_memory: bool = True
 
 
+class MLSettings(BaseSettings):
+    """Machine learning configuration for local model training and artifacts."""
+
+    model_config = SettingsConfigDict(
+        env_file=("../.env", ".env"),
+        env_file_encoding="utf-8",
+        env_prefix="ML_",
+        extra="ignore",
+    )
+
+    artifact_dir: str = "../models"
+    random_seed: int = 42
+    test_size: float = 0.2
+    risk_model_name: str = "risk_prediction"
+    segmentation_model_name: str = "customer_segmentation"
+    segmentation_clusters: int = 5
+
+    @property
+    def artifact_path(self) -> Path:
+        path = Path(self.artifact_dir).expanduser()
+        if path.is_absolute():
+            return path
+        return (Path.cwd() / path).resolve()
+
+
 class LoggingSettings(BaseSettings):
     """Structured logging configuration."""
 
@@ -132,6 +157,7 @@ class Settings(BaseModel):
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     data: DataSettings = Field(default_factory=DataSettings)
     ai: AISettings = Field(default_factory=AISettings)
+    ml: MLSettings = Field(default_factory=MLSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
 
 

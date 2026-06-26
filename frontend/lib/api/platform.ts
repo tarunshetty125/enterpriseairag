@@ -6,11 +6,18 @@ import type {
   CustomerListResponse,
   DatasetMetadata,
   DatasetStatus,
+  FeatureImportanceResponse,
   FeatureStoreStatus,
   HealthResponse,
   IngestionResponse,
+  MLEvaluationResponse,
+  ModelRegistryItem,
+  ModelRegistryResponse,
   QualityReport,
+  RiskPredictionResponse,
+  SegmentPredictionResponse,
   SystemHealthResponse,
+  TrainModelResponse,
 } from "@/types/platform";
 
 export function getHealth(): Promise<HealthResponse> {
@@ -59,4 +66,52 @@ export function getDataQuality(): Promise<QualityReport> {
 
 export function getFeatureStoreStatus(): Promise<FeatureStoreStatus> {
   return unwrap(apiClient.get<FeatureStoreStatus>("/feature-store/status"));
+}
+
+export function trainRiskModel(): Promise<TrainModelResponse> {
+  return unwrap(apiClient.post<TrainModelResponse>("/ml/train/risk"));
+}
+
+export function trainSegmentationModel(): Promise<TrainModelResponse> {
+  return unwrap(apiClient.post<TrainModelResponse>("/ml/train/segmentation"));
+}
+
+export function getMLModels(): Promise<ModelRegistryResponse> {
+  return unwrap(apiClient.get<ModelRegistryResponse>("/ml/models"));
+}
+
+export function getMLModel(model: string): Promise<ModelRegistryItem> {
+  return unwrap(apiClient.get<ModelRegistryItem>(`/ml/models/${model}`));
+}
+
+export function activateMLModel(modelId: number): Promise<ModelRegistryItem> {
+  return unwrap(apiClient.post<ModelRegistryItem>(`/ml/models/${modelId}/activate`));
+}
+
+export function predictRisk(customerId: string): Promise<RiskPredictionResponse> {
+  return unwrap(
+    apiClient.post<RiskPredictionResponse>("/ml/predict/risk", {
+      customerId,
+    }),
+  );
+}
+
+export function predictSegment(customerId: string): Promise<SegmentPredictionResponse> {
+  return unwrap(
+    apiClient.post<SegmentPredictionResponse>("/ml/predict/segment", {
+      customerId,
+    }),
+  );
+}
+
+export function getMLEvaluation(): Promise<MLEvaluationResponse> {
+  return unwrap(apiClient.get<MLEvaluationResponse>("/ml/evaluation"));
+}
+
+export function getFeatureImportance(limit = 10): Promise<FeatureImportanceResponse> {
+  return unwrap(
+    apiClient.get<FeatureImportanceResponse>("/ml/feature-importance", {
+      params: { limit },
+    }),
+  );
 }

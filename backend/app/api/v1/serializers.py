@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from app.ml.pipelines.prediction import RiskPredictionResult, SegmentPredictionResult
+from app.ml.prediction.explainability import FeatureContribution
+from app.ml.registry.service import ModelRegistryService
 from app.models.canonical import (
     Customer,
     DatasetMetadata,
@@ -11,6 +14,7 @@ from app.models.canonical import (
     Product,
     Transaction,
 )
+from app.models.ml import MLModelRegistry
 from app.schemas.customers import (
     CustomerDetailResponse,
     CustomerFeaturesResponse,
@@ -21,6 +25,12 @@ from app.schemas.customers import (
     TransactionResponse,
 )
 from app.schemas.datasets import DatasetMetadataResponse, IngestionRunResponse
+from app.schemas.ml import (
+    FeatureContributionResponse,
+    ModelRegistryItemResponse,
+    RiskPredictionResponse,
+    SegmentPredictionResponse,
+)
 
 
 def serialize_dataset_metadata(item: DatasetMetadata) -> DatasetMetadataResponse:
@@ -146,6 +156,76 @@ def serialize_product(product: Product) -> ProductResponse:
         credit_limit=product.credit_limit,
         revolving_balance=product.revolving_balance,
         revenue=product.revenue,
+    )
+
+
+def serialize_model_registry_item(
+    model: MLModelRegistry,
+    registry: ModelRegistryService,
+) -> ModelRegistryItemResponse:
+    return ModelRegistryItemResponse(
+        id=model.id,
+        model_name=model.model_name,
+        version=model.version,
+        algorithm=model.algorithm,
+        training_date=model.training_date,
+        metrics=dict(model.metrics or {}),
+        accuracy=model.accuracy,
+        precision=model.precision,
+        recall=model.recall,
+        f1=model.f1,
+        features_used=list(model.features_used or []),
+        artifact_path=model.artifact_path,
+        dataset_version=model.dataset_version,
+        feature_version=model.feature_version,
+        active_model=bool(model.active_model),
+        training_time_ms=model.training_time_ms,
+        inference_time_ms=model.inference_time_ms,
+        training_metadata=dict(model.training_metadata or {}),
+        prediction_count=registry.prediction_count(model.id),
+    )
+
+
+def serialize_risk_prediction(
+    prediction: RiskPredictionResult,
+) -> RiskPredictionResponse:
+    return RiskPredictionResponse(
+        customer_id=prediction.customer_id,
+        risk_level=prediction.risk_level,
+        confidence=prediction.confidence,
+        probabilities=prediction.probabilities,
+        top_features=[
+            serialize_feature_contribution(feature)
+            for feature in prediction.top_features
+        ],
+        business_explanation=prediction.business_explanation,
+        model_version=prediction.model_version,
+        inference_time_ms=prediction.inference_time_ms,
+    )
+
+
+def serialize_segment_prediction(
+    prediction: SegmentPredictionResult,
+) -> SegmentPredictionResponse:
+    return SegmentPredictionResponse(
+        customer_id=prediction.customer_id,
+        segment_label=prediction.segment_label,
+        confidence=prediction.confidence,
+        nearest_distance=prediction.nearest_distance,
+        centroid_summary=prediction.centroid_summary,
+        model_version=prediction.model_version,
+        inference_time_ms=prediction.inference_time_ms,
+    )
+
+
+def serialize_feature_contribution(
+    feature: FeatureContribution,
+) -> FeatureContributionResponse:
+    return FeatureContributionResponse(
+        name=feature.name,
+        value=feature.value,
+        importance=feature.importance,
+        description=feature.description,
     )
 
 
