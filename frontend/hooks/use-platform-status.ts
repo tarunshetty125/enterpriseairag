@@ -4,6 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
   getAIProcessingSettings,
+  getDataQuality,
+  getDatasetStatus,
+  getFeatureStoreStatus,
   getHealth,
   getSystemHealth,
 } from "@/lib/api/platform";
@@ -27,9 +30,30 @@ export function usePlatformStatus() {
     refetchInterval: 30000,
   });
 
+  const datasetStatus = useQuery({
+    queryKey: ["platform", "dataset-status"],
+    queryFn: getDatasetStatus,
+    refetchInterval: 30000,
+  });
+
+  const featureStoreStatus = useQuery({
+    queryKey: ["platform", "feature-store-status"],
+    queryFn: getFeatureStoreStatus,
+    refetchInterval: 30000,
+  });
+
+  const dataQuality = useQuery({
+    queryKey: ["platform", "data-quality"],
+    queryFn: getDataQuality,
+    refetchInterval: 30000,
+  });
+
   return {
     health,
     systemHealth,
     aiSettings,
+    datasetStatus,
+    featureStoreStatus,
+    dataQuality,
   };
 }

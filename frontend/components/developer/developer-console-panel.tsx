@@ -1,6 +1,13 @@
 "use client";
 
-import { Database, Server, Settings2, Workflow } from "lucide-react";
+import {
+  Database,
+  Layers3,
+  Server,
+  Settings2,
+  ShieldCheck,
+  Workflow,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +22,14 @@ function statusLabel(isSuccess: boolean, isLoading: boolean) {
 }
 
 export function DeveloperConsolePanel() {
-  const { health, systemHealth, aiSettings } = usePlatformStatus();
+  const {
+    health,
+    systemHealth,
+    aiSettings,
+    datasetStatus,
+    featureStoreStatus,
+    dataQuality,
+  } = usePlatformStatus();
   const sqlite = systemHealth.data?.components.find((item) => item.name === "sqlite");
 
   const cards = [
@@ -35,7 +49,7 @@ export function DeveloperConsolePanel() {
     {
       label: "Current AI Provider",
       value: aiSettings.data?.provider ?? "Unavailable",
-      detail: "Configuration only in Phase 1",
+      detail: "Configuration only; no providers in Phase 2",
       icon: Workflow,
     },
     {
@@ -44,13 +58,51 @@ export function DeveloperConsolePanel() {
       detail: `Version ${health.data?.version ?? "unknown"}`,
       icon: Settings2,
     },
+    {
+      label: "Datasets",
+      value: datasetStatus.data?.loadedDatasets ?? 0,
+      detail: `${datasetStatus.data?.rowsLoaded ?? 0} rows loaded`,
+      icon: Database,
+    },
+    {
+      label: "Dataset Version",
+      value: featureStoreStatus.data?.datasetVersion ?? "Unavailable",
+      detail: "Derived from source checksums",
+      icon: Layers3,
+    },
+    {
+      label: "Feature Store",
+      value: featureStoreStatus.data?.featureVersion ?? "Unavailable",
+      detail: `${featureStoreStatus.data?.snapshotCount ?? 0} snapshots`,
+      icon: Layers3,
+    },
+    {
+      label: "Quality Score",
+      value: dataQuality.data ? `${dataQuality.data.score.toFixed(1)}%` : "Unavailable",
+      detail: `${dataQuality.data?.checks.length ?? 0} checks`,
+      icon: ShieldCheck,
+    },
+    {
+      label: "SQLite Size",
+      value: `${Math.round((datasetStatus.data?.sqliteSizeBytes ?? 0) / 1024)} KB`,
+      detail: datasetStatus.data?.sqlitePath ?? "Local SQLite database",
+      icon: Database,
+    },
+    {
+      label: "Latest Ingestion",
+      value: datasetStatus.data?.latestIngestion?.status ?? "No runs",
+      detail:
+        datasetStatus.data?.latestIngestion?.message ??
+        "Run ingestion from Dataset Management",
+      icon: Server,
+    },
   ];
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Developer Console"
-        description="Phase 1 operational view backed by live health and configuration endpoints."
+        description="Phase 2 operational view for backend health, SQLite, datasets, feature store, and quality checks."
       >
         <Badge variant="outline">{health.data?.environment ?? "local"}</Badge>
       </PageHeader>

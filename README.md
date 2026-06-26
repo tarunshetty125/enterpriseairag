@@ -30,6 +30,8 @@ FastAPI
 
 Phase 1 does not implement ML, NLP, RAG, AI providers, workflow logic, or business logic. It creates the clean boundaries those systems will use.
 
+Phase 2 adds the enterprise data foundation: public dataset ingestion, canonical schema, SQLite persistence, deterministic synthetic joins, data quality reporting, and a versioned feature store. It still does not implement ML predictions, AI providers, RAG, or LLM workflows.
+
 ## Folder Structure
 
 ```text
@@ -161,6 +163,17 @@ Only these versioned endpoints exist in Phase 1:
 - `GET /api/v1/health`
 - `GET /api/v1/system-health`
 - `GET /api/v1/settings/ai-processing`
+
+## Phase 2 API Surface
+
+- `GET /api/v1/datasets`
+- `POST /api/v1/datasets/ingest`
+- `GET /api/v1/datasets/status`
+- `GET /api/v1/customers`
+- `GET /api/v1/customers/{id}`
+- `GET /api/v1/customers/{id}/features`
+- `GET /api/v1/data-quality`
+- `GET /api/v1/feature-store/status`
 
 ## Roadmap
 

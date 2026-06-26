@@ -54,6 +54,44 @@ class DatabaseSettings(BaseSettings):
         return f"sqlite:///{self.sqlite_path.as_posix()}"
 
 
+class DataSettings(BaseSettings):
+    """Local dataset storage paths."""
+
+    model_config = SettingsConfigDict(
+        env_file=("../.env", ".env"),
+        env_file_encoding="utf-8",
+        env_prefix="DATA_",
+        extra="ignore",
+    )
+
+    raw_dir: str = "../data/raw"
+    processed_dir: str = "../data/processed"
+    external_dir: str = "../data/external"
+    samples_dir: str = "../data/samples"
+
+    def resolve(self, value: str) -> Path:
+        path = Path(value).expanduser()
+        if path.is_absolute():
+            return path
+        return (Path.cwd() / path).resolve()
+
+    @property
+    def raw_path(self) -> Path:
+        return self.resolve(self.raw_dir)
+
+    @property
+    def processed_path(self) -> Path:
+        return self.resolve(self.processed_dir)
+
+    @property
+    def external_path(self) -> Path:
+        return self.resolve(self.external_dir)
+
+    @property
+    def samples_path(self) -> Path:
+        return self.resolve(self.samples_dir)
+
+
 class AISettings(BaseSettings):
     """AI processing configuration only; providers are not implemented in Phase 1."""
 
@@ -92,6 +130,7 @@ class LoggingSettings(BaseSettings):
 class Settings(BaseModel):
     app: AppSettings = Field(default_factory=AppSettings)
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
+    data: DataSettings = Field(default_factory=DataSettings)
     ai: AISettings = Field(default_factory=AISettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
 

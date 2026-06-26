@@ -1,10 +1,5 @@
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 
 export default function DashboardPage() {
-  return (
-    <PagePlaceholder
-      title="Dashboard"
-      description="Enterprise dashboard route prepared for platform metrics in later phases."
-    />
-  );
+  return <DashboardPanel />;
 }

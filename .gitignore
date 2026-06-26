@@ -32,11 +32,15 @@ yarn-error.log*
 # Local artifacts
 data/raw/*
 data/processed/*
+data/external/*
+data/samples/*
 data/policies/*
 models/*
 vectorstore/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+!data/external/.gitkeep
+!data/samples/.gitkeep
 !data/policies/.gitkeep
 !models/.gitkeep
 !vectorstore/.gitkeep

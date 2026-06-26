@@ -1,10 +1,5 @@
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { CustomerListPanel } from "@/components/customer/customer-list-panel";
 
 export default function CustomersPage() {
-  return (
-    <PagePlaceholder
-      title="Customers"
-      description="Customer 360 route prepared for dataset ingestion and profile services."
-    />
-  );
+  return <CustomerListPanel />;
 }
