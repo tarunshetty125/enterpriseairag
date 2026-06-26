@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Backend runtime
+*.db
+*.sqlite
+*.sqlite3
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local artifacts
+data/raw/*
+data/processed/*
+data/policies/*
+models/*
+vectorstore/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/policies/.gitkeep
+!models/.gitkeep
+!vectorstore/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
