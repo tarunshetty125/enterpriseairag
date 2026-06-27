@@ -105,3 +105,32 @@ class RecommendationHistory(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now
     )
+
+
+class CustomerIntelligenceReport(Base):
+    __tablename__ = "customer_intelligence_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    customer_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    report_version: Mapped[str] = mapped_column(String(40), nullable=False)
+    input_hash: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(80), nullable=False)
+    report: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    evidence: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    workflow_trace: Mapped[list[dict[str, Any]]] = mapped_column(JSON, nullable=False)
+    provider: Mapped[str] = mapped_column(String(80), nullable=False)
+    model: Mapped[str] = mapped_column(String(160), nullable=False)
+    prompt_version: Mapped[str] = mapped_column(String(80), nullable=False)
+    latency_ms: Mapped[float] = mapped_column(Float, nullable=False)
+    prompt_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    completion_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    total_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    retrieved_chunks: Mapped[int] = mapped_column(Integer, default=0)
+    context_size: Mapped[int] = mapped_column(Integer, default=0)
+    cache_hits: Mapped[int] = mapped_column(Integer, default=0)
+    generated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now
+    )

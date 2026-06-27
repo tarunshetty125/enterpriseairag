@@ -126,3 +126,78 @@ class IntelligenceStatusResponse(BaseModel):
     recommendation_count: int
     recommendation_history_count: int
     latest_recommendation_at: datetime | None
+
+
+class CustomerIntelligenceReportRequest(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    force_regenerate: bool = False
+
+
+class WorkflowStageResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    stage: str
+    source: str
+    status: str
+    duration_ms: float
+    details: str
+
+
+class TokenUsageSummaryResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+
+
+class CustomerIntelligenceReportResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    id: int
+    customer_id: str
+    report_version: str
+    status: str
+    report: dict[str, Any]
+    evidence: dict[str, Any]
+    workflow_trace: list[WorkflowStageResponse]
+    provider: str
+    model: str
+    prompt_version: str
+    latency_ms: float
+    token_usage: TokenUsageSummaryResponse
+    retrieved_chunks: int
+    context_size: int
+    cache_hit: bool
+    cache_hits: int
+    generated_at: datetime
+    updated_at: datetime
+
+
+class RecentReportsResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    reports: list[CustomerIntelligenceReportResponse]
+
+
+class ShowcaseMetricsResponse(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    customers: int
+    high_risk: int
+    medium_risk: int
+    low_risk: int
+    segments: list[dict[str, Any]]
+    recommendations: int
+    knowledge_base: int
+    ai_requests: int
+    provider: str
+    current_model: str
+    health: str
+    recent_reports: list[CustomerIntelligenceReportResponse]
+    risk_distribution: list[dict[str, Any]]
+    provider_usage: list[dict[str, Any]]
+    inference_latency_ms: float
+    report_count: int
+    cache_hits: int

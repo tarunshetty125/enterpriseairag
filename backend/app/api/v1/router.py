@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.api.v1 import (
     chat,
+    customer_intelligence,
     customers,
     data_quality,
     datasets,
@@ -24,6 +25,7 @@ api_router.include_router(system_health.router)
 api_router.include_router(settings.router)
 api_router.include_router(datasets.router)
 api_router.include_router(customers.router)
+api_router.include_router(customer_intelligence.router)
 api_router.include_router(data_quality.router)
 api_router.include_router(feature_store.router)
 api_router.include_router(ml.router)

@@ -4,6 +4,7 @@ import type {
   ChatResponse,
   ChatSession,
   ChatSessionDetail,
+  CustomerIntelligenceReport,
   CustomerDetail,
   CustomerFeatures,
   CustomerListResponse,
@@ -30,11 +31,14 @@ import type {
   RecommendationGenerationResponse,
   RecommendationListResponse,
   RecommendationRule,
+  RecentReportsResponse,
   RiskPredictionResponse,
   SegmentPredictionResponse,
+  ShowcaseMetricsResponse,
   SystemHealthResponse,
   TransactionInsightsResponse,
   TrainModelResponse,
+  WorkflowStage,
 } from "@/types/platform";
 
 export function getHealth(): Promise<HealthResponse> {
@@ -245,4 +249,56 @@ export function getPrompts(): Promise<PromptTemplate[]> {
 
 export function getPrompt(name: string): Promise<PromptTemplate> {
   return unwrap(apiClient.get<PromptTemplate>(`/prompts/${name}`));
+}
+
+export function generateCustomerIntelligenceReport(
+  customerId: string,
+  forceRegenerate = false,
+): Promise<CustomerIntelligenceReport> {
+  return unwrap(
+    apiClient.post<CustomerIntelligenceReport>(
+      `/customers/${customerId}/intelligence-report`,
+      { forceRegenerate },
+    ),
+  );
+}
+
+export function getCustomerIntelligenceReport(
+  customerId: string,
+): Promise<CustomerIntelligenceReport> {
+  return unwrap(
+    apiClient.get<CustomerIntelligenceReport>(
+      `/customers/${customerId}/intelligence-report`,
+    ),
+  );
+}
+
+export function getCustomerWorkflowTrace(
+  customerId: string,
+): Promise<WorkflowStage[]> {
+  return unwrap(
+    apiClient.get<WorkflowStage[]>(`/customers/${customerId}/workflow-trace`),
+  );
+}
+
+export function getRecentIntelligenceReports(): Promise<RecentReportsResponse> {
+  return unwrap(apiClient.get<RecentReportsResponse>("/intelligence/reports/recent"));
+}
+
+export function getShowcaseMetrics(): Promise<ShowcaseMetricsResponse> {
+  return unwrap(apiClient.get<ShowcaseMetricsResponse>("/intelligence/showcase-metrics"));
+}
+
+export async function exportCustomerIntelligenceReport(
+  customerId: string,
+  format: "pdf" | "markdown" | "json",
+): Promise<Blob> {
+  const response = await apiClient.get(
+    `/customers/${customerId}/intelligence-report/export`,
+    {
+      params: { format },
+      responseType: "blob",
+    },
+  );
+  return response.data as Blob;
 }

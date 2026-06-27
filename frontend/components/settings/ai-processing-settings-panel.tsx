@@ -18,6 +18,7 @@ import {
   getAIProcessingSettings,
   getProviderModels,
   getProviders,
+  getPrompts,
   patchProviderSettings,
   switchProvider,
 } from "@/lib/api/platform";
@@ -32,6 +33,10 @@ export function AIProcessingSettingsPanel() {
   const providers = useQuery({
     queryKey: ["providers"],
     queryFn: getProviders,
+  });
+  const prompts = useQuery({
+    queryKey: ["prompts"],
+    queryFn: getPrompts,
   });
   const [provider, setProvider] = useState("");
   const [model, setModel] = useState("");
@@ -221,6 +226,26 @@ export function AIProcessingSettingsPanel() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Prompt Versions</CardTitle>
+          <CardDescription>
+            Prompt templates are loaded by the backend prompt registry at
+            request time, so template edits apply without a FastAPI restart.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {(prompts.data ?? []).map((prompt) => (
+            <div key={prompt.name} className="rounded-md border p-3 text-sm">
+              <div className="font-medium">{prompt.name}</div>
+              <div className="mt-1 text-xs text-muted-foreground">
+                Version {prompt.version}
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

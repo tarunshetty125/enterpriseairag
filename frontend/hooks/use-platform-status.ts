@@ -13,6 +13,7 @@ import {
   getMLEvaluation,
   getMLModels,
   getProviderStatus,
+  getShowcaseMetrics,
   getSystemHealth,
 } from "@/lib/api/platform";
 
@@ -83,6 +84,12 @@ export function usePlatformStatus() {
     refetchInterval: 30000,
   });
 
+  const showcaseMetrics = useQuery({
+    queryKey: ["platform", "showcase-metrics"],
+    queryFn: getShowcaseMetrics,
+    refetchInterval: 30000,
+  });
+
   return {
     health,
     systemHealth,
@@ -95,5 +102,6 @@ export function usePlatformStatus() {
     intelligenceStatus,
     providerStatus,
     knowledgeStatus,
+    showcaseMetrics,
   };
 }

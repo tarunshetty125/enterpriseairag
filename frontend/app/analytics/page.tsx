@@ -1,5 +1,5 @@
-import { MLDashboardPanel } from "@/components/ml/ml-dashboard-panel";
+import { ExecutiveAnalyticsPanel } from "@/components/analytics/executive-analytics-panel";
 
 export default function AnalyticsPage() {
-  return <MLDashboardPanel />;
+  return <ExecutiveAnalyticsPanel />;
 }

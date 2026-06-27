@@ -474,3 +474,56 @@ export interface PromptTemplate {
   variables: string[];
   body: string;
 }
+
+export interface WorkflowStage {
+  stage: string;
+  source: string;
+  status: string;
+  durationMs: number;
+  details: string;
+}
+
+export interface CustomerIntelligenceReport {
+  id: number;
+  customerId: string;
+  reportVersion: string;
+  status: string;
+  report: Record<string, unknown>;
+  evidence: Record<string, unknown>;
+  workflowTrace: WorkflowStage[];
+  provider: string;
+  model: string;
+  promptVersion: string;
+  latencyMs: number;
+  tokenUsage: TokenUsage;
+  retrievedChunks: number;
+  contextSize: number;
+  cacheHit: boolean;
+  cacheHits: number;
+  generatedAt: string;
+  updatedAt: string;
+}
+
+export interface RecentReportsResponse {
+  reports: CustomerIntelligenceReport[];
+}
+
+export interface ShowcaseMetricsResponse {
+  customers: number;
+  highRisk: number;
+  mediumRisk: number;
+  lowRisk: number;
+  segments: Array<Record<string, unknown>>;
+  recommendations: number;
+  knowledgeBase: number;
+  aiRequests: number;
+  provider: string;
+  currentModel: string;
+  health: string;
+  recentReports: CustomerIntelligenceReport[];
+  riskDistribution: Array<Record<string, unknown>>;
+  providerUsage: Array<Record<string, unknown>>;
+  inferenceLatencyMs: number;
+  reportCount: number;
+  cacheHits: number;
+}

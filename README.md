@@ -245,6 +245,24 @@ Only these versioned endpoints exist in Phase 1:
 - `GET /api/v1/prompts`
 - `GET /api/v1/prompts/{name}`
 
+## Final Showcase API Surface
+
+- `POST /api/v1/customers/{customer_id}/intelligence-report`
+- `GET /api/v1/customers/{customer_id}/intelligence-report`
+- `GET /api/v1/customers/{customer_id}/workflow-trace`
+- `GET /api/v1/customers/{customer_id}/intelligence-report/export`
+- `GET /api/v1/intelligence/reports/recent`
+- `GET /api/v1/intelligence/showcase-metrics`
+
+## Final Showcase
+
+The final phase adds the flagship Customer Intelligence Report. It composes the
+canonical data foundation, feature store, machine learning predictions,
+transaction NLP, recommendation engine, policy RAG, prompt registry, AI Gateway,
+and active provider into a single enterprise report. Reports are grounded in
+structured evidence, include citations and explainability, support workflow
+tracing, cache repeated runs, and export to PDF, Markdown, or JSON.
+
 ## Roadmap
 
 1. Phase 1: Enterprise foundation, configuration, SQLite, shell UI.
@@ -252,5 +270,4 @@ Only these versioned endpoints exist in Phase 1:
 3. Phase 3: ML models, model registry, explainability.
 4. Phase 4: NLP intelligence, behaviour profiles, recommendation engine.
 5. Phase 5: RAG, embeddings, FAISS-compatible index, AI gateway, Groq/OpenAI switching.
-6. Phase 6: Full dashboard, Customer 360, analytics, developer console, settings.
-7. Phase 7: Tests, performance, documentation, demo preparation.
+6. Final Phase: Customer Intelligence Platform and interview showcase.

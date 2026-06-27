@@ -9,6 +9,7 @@ import {
   Server,
   Settings2,
   ShieldCheck,
+  Sparkles,
   Timer,
   Workflow,
 } from "lucide-react";
@@ -37,6 +38,7 @@ export function DeveloperConsolePanel() {
     knowledgeStatus,
     mlModels,
     providerStatus,
+    showcaseMetrics,
   } = usePlatformStatus();
   const sqlite = systemHealth.data?.components.find((item) => item.name === "sqlite");
   const registeredModels = mlModels.data?.models ?? [];
@@ -210,6 +212,20 @@ export function DeveloperConsolePanel() {
       label: "Provider Switches",
       value: providerStatus.data?.switchEvents.length ?? 0,
       detail: "Runtime switching events",
+      icon: Workflow,
+    },
+    {
+      label: "Intelligence Reports",
+      value: showcaseMetrics.data?.reportCount ?? 0,
+      detail: `${showcaseMetrics.data?.cacheHits ?? 0} report cache hits`,
+      icon: Sparkles,
+    },
+    {
+      label: "Workflow Time",
+      value: latestModel?.inferenceTimeMs
+        ? `${latestModel.inferenceTimeMs.toFixed(1)} ms`
+        : `${showcaseMetrics.data?.inferenceLatencyMs ?? 0} ms`,
+      detail: "Latest model or AI workflow latency",
       icon: Workflow,
     },
   ];
