@@ -248,3 +248,104 @@ export interface FeatureImportanceResponse {
   modelVersion: string;
   features: FeatureContribution[];
 }
+
+export interface TransactionInsight {
+  id: number;
+  transactionId: number;
+  customerId: string;
+  amount: number;
+  direction: string;
+  transactionType: string;
+  rawDescription: string;
+  category: string;
+  keywords: string[];
+  entities: Record<string, unknown>;
+  sentimentLabel: string;
+  sentimentScore: number;
+  lifestyleIndicators: string[];
+  processedAt: string;
+}
+
+export interface TransactionInsightsResponse {
+  customerId: string;
+  total: number;
+  insights: TransactionInsight[];
+  categoryDistribution: Record<string, number>;
+  spendingDistribution: Record<string, number>;
+}
+
+export interface BehaviourProfile {
+  customerId: string;
+  profileVersion: string;
+  summary: string;
+  flags: string[];
+  lifestyleIndicators: string[];
+  categorySpend: Record<string, number>;
+  categoryCounts: Record<string, number>;
+  monthlyTrends: Array<Record<string, unknown>>;
+  topMerchants: Array<Record<string, unknown>>;
+  features: Record<string, unknown>;
+  processingTimeMs: number;
+  generatedAt: string;
+}
+
+export interface RecommendationRule {
+  id: number;
+  ruleId: string;
+  productName: string;
+  description: string;
+  conditions: Record<string, unknown>;
+  baseScore: number;
+  version: string;
+  active: boolean;
+}
+
+export interface Recommendation {
+  id: number;
+  customerId: string;
+  ruleId: string;
+  productName: string;
+  suitabilityScore: number;
+  confidence: number;
+  reason: string;
+  supportingFeatures: Array<Record<string, unknown>>;
+  businessExplanation: string;
+  recommendationVersion: string;
+  status: string;
+  generatedAt: string;
+}
+
+export interface RecommendationHistory {
+  id: number;
+  customerId: string;
+  recommendationId: number | null;
+  action: string;
+  details: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface RecommendationListResponse {
+  customerId: string;
+  currentProducts: Product[];
+  recommendations: Recommendation[];
+  history: RecommendationHistory[];
+}
+
+export interface RecommendationGenerationResponse {
+  customerId: string;
+  generated: number;
+  recommendations: Recommendation[];
+}
+
+export interface IntelligenceStatusResponse {
+  nlpProcessingVersion: string;
+  transactionsProcessed: number;
+  behaviourProfilesGenerated: number;
+  averageNlpProcessingTimeMs: number;
+  latestBehaviourProfileAt: string | null;
+  recommendationRuleVersion: string;
+  recommendationRuleCount: number;
+  recommendationCount: number;
+  recommendationHistoryCount: number;
+  latestRecommendationAt: string | null;
+}

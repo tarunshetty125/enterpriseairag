@@ -1,9 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Brain, Sparkles } from "lucide-react";
 
 import { StatusCard } from "@/components/dashboard/status-card";
 import { PageHeader } from "@/components/layout/page-header";
+import { formatPercent } from "@/components/ml/format";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DataTable,
@@ -13,7 +17,15 @@ import {
   DataTableHeader,
   DataTableRow,
 } from "@/components/ui/data-table";
-import { getCustomer } from "@/lib/api/platform";
+import {
+  generateRecommendations,
+  getCustomer,
+  getCustomerBehaviour,
+  getRecommendations,
+  getTransactionInsights,
+  predictRisk,
+  predictSegment,
+} from "@/lib/api/platform";
 
 function formatValue(value: unknown) {
   if (value === null || value === undefined) {
@@ -26,9 +38,36 @@ function formatValue(value: unknown) {
 }
 
 export function CustomerDetailPanel({ customerId }: { customerId: string }) {
+  const queryClient = useQueryClient();
   const customer = useQuery({
     queryKey: ["customers", customerId],
     queryFn: () => getCustomer(customerId),
+  });
+  const behaviour = useQuery({
+    queryKey: ["customer-behaviour", customerId],
+    queryFn: () => getCustomerBehaviour(customerId),
+  });
+  const insights = useQuery({
+    queryKey: ["transaction-insights", customerId],
+    queryFn: () => getTransactionInsights(customerId),
+  });
+  const recommendations = useQuery({
+    queryKey: ["recommendations", customerId],
+    queryFn: () => getRecommendations(customerId),
+  });
+  const risk = useMutation({
+    mutationFn: predictRisk,
+  });
+  const segment = useMutation({
+    mutationFn: predictSegment,
+  });
+  const recommendationGeneration = useMutation({
+    mutationFn: generateRecommendations,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["recommendations", customerId],
+      });
+    },
   });
   const data = customer.data;
 
@@ -43,6 +82,93 @@ export function CustomerDetailPanel({ customerId }: { customerId: string }) {
         <StatusCard title="Income" value={formatValue(data?.estimatedIncome)} />
         <StatusCard title="Products" value={data?.products.length ?? 0} />
         <StatusCard title="Feature Count" value={data?.features.length ?? 0} />
+      </div>
+      <div className="grid gap-6 xl:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>ML Predictions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                disabled={risk.isPending}
+                onClick={() => risk.mutate(customerId)}
+              >
+                <Brain className="h-4 w-4" aria-hidden="true" />
+                Risk
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={segment.isPending}
+                onClick={() => segment.mutate(customerId)}
+              >
+                <Brain className="h-4 w-4" aria-hidden="true" />
+                Segment
+              </Button>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Risk Level</span>
+                <span>{risk.data?.riskLevel ?? "Run prediction"}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Risk Confidence</span>
+                <span>
+                  {risk.data ? formatPercent(risk.data.confidence) : "Unavailable"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Segment</span>
+                <span>{segment.data?.segmentLabel ?? "Run prediction"}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Behaviour Profile</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm leading-6 text-muted-foreground">
+              {behaviour.data?.summary ?? "No behaviour profile available yet."}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {(behaviour.data?.flags ?? []).map((flag) => (
+                <Badge key={flag} variant="secondary">
+                  {flag}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button
+              size="sm"
+              disabled={recommendationGeneration.isPending}
+              onClick={() => recommendationGeneration.mutate(customerId)}
+            >
+              <Sparkles className="h-4 w-4" aria-hidden="true" />
+              Generate
+            </Button>
+            {(recommendations.data?.recommendations ?? []).slice(0, 3).map((item) => (
+              <div key={item.id} className="rounded-md border p-3 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-medium">{item.productName}</span>
+                  <Badge variant="outline">{formatValue(item.suitabilityScore)}</Badge>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">{item.reason}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
       <Card>
         <CardHeader>
@@ -136,16 +262,23 @@ export function CustomerDetailPanel({ customerId }: { customerId: string }) {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Transactions</CardTitle>
+            <CardTitle>Transaction Intelligence</CardTitle>
           </CardHeader>
           <CardContent>
             <DataTable>
+              <DataTableHeader>
+                <DataTableRow>
+                  <DataTableHead>Category</DataTableHead>
+                  <DataTableHead>Amount</DataTableHead>
+                  <DataTableHead>Sentiment</DataTableHead>
+                </DataTableRow>
+              </DataTableHeader>
               <DataTableBody>
-                {(data?.transactions ?? []).slice(0, 10).map((transaction) => (
-                  <DataTableRow key={transaction.id}>
-                    <DataTableCell>{transaction.category}</DataTableCell>
-                    <DataTableCell>{formatValue(transaction.amount)}</DataTableCell>
-                    <DataTableCell>{transaction.direction}</DataTableCell>
+                {(insights.data?.insights ?? []).slice(0, 10).map((insight) => (
+                  <DataTableRow key={insight.id}>
+                    <DataTableCell>{insight.category}</DataTableCell>
+                    <DataTableCell>{formatValue(insight.amount)}</DataTableCell>
+                    <DataTableCell>{insight.sentimentLabel}</DataTableCell>
                   </DataTableRow>
                 ))}
               </DataTableBody>

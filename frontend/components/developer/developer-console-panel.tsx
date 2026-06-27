@@ -33,6 +33,7 @@ export function DeveloperConsolePanel() {
     datasetStatus,
     featureStoreStatus,
     dataQuality,
+    intelligenceStatus,
     mlModels,
   } = usePlatformStatus();
   const sqlite = systemHealth.data?.components.find((item) => item.name === "sqlite");
@@ -61,7 +62,7 @@ export function DeveloperConsolePanel() {
     {
       label: "Current AI Provider",
       value: aiSettings.data?.provider ?? "Unavailable",
-      detail: "Configuration only; no providers in Phase 2",
+      detail: "Configuration only; providers begin in Phase 5",
       icon: Workflow,
     },
     {
@@ -144,13 +145,39 @@ export function DeveloperConsolePanel() {
       detail: "Risk and segmentation active model coverage",
       icon: ShieldCheck,
     },
+    {
+      label: "NLP Processing Time",
+      value: intelligenceStatus.data
+        ? `${intelligenceStatus.data.averageNlpProcessingTimeMs.toFixed(2)} ms`
+        : "Unavailable",
+      detail: intelligenceStatus.data?.nlpProcessingVersion ?? "No NLP runs",
+      icon: Activity,
+    },
+    {
+      label: "Transactions Processed",
+      value: intelligenceStatus.data?.transactionsProcessed ?? 0,
+      detail: `${intelligenceStatus.data?.behaviourProfilesGenerated ?? 0} behaviour profiles`,
+      icon: Workflow,
+    },
+    {
+      label: "Recommendations",
+      value: intelligenceStatus.data?.recommendationCount ?? 0,
+      detail: `${intelligenceStatus.data?.recommendationHistoryCount ?? 0} history events`,
+      icon: Gauge,
+    },
+    {
+      label: "Recommendation Rules",
+      value: intelligenceStatus.data?.recommendationRuleCount ?? 0,
+      detail: intelligenceStatus.data?.recommendationRuleVersion ?? "Rules not seeded",
+      icon: Settings2,
+    },
   ];
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Developer Console"
-        description="Phase 2 operational view for backend health, SQLite, datasets, feature store, and quality checks."
+        description="Operational view for backend health, SQLite, datasets, feature store, ML, NLP, and recommendations."
       >
         <Badge variant="outline">{health.data?.environment ?? "local"}</Badge>
       </PageHeader>

@@ -8,6 +8,7 @@ import {
   getDatasetStatus,
   getFeatureStoreStatus,
   getHealth,
+  getIntelligenceStatus,
   getMLEvaluation,
   getMLModels,
   getSystemHealth,
@@ -62,6 +63,12 @@ export function usePlatformStatus() {
     refetchInterval: 30000,
   });
 
+  const intelligenceStatus = useQuery({
+    queryKey: ["platform", "intelligence-status"],
+    queryFn: getIntelligenceStatus,
+    refetchInterval: 30000,
+  });
+
   return {
     health,
     systemHealth,
@@ -71,5 +78,6 @@ export function usePlatformStatus() {
     dataQuality,
     mlModels,
     mlEvaluation,
+    intelligenceStatus,
   };
 }

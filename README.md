@@ -37,6 +37,12 @@ versioned artifacts, SQLite model registry, risk prediction, customer
 segmentation, evaluation metrics, prediction logging, and explainability. It
 still does not implement NLP, recommendations, AI providers, RAG, or chat.
 
+Phase 4 adds deterministic NLP intelligence and rules-based recommendations:
+transaction classification, entity extraction, sentiment signals, behaviour
+profiles, explainable product recommendations, persistence, API endpoints, and
+connected frontend pages. It still does not implement AI providers, RAG,
+LangChain, FAISS, workflow orchestration, prompt builders, or chat.
+
 ## Folder Structure
 
 ```text
@@ -82,6 +88,9 @@ frontend/app/
   model-registry/
   risk-prediction/
   segmentation/
+  transaction-intelligence/
+  behaviour/
+  recommendations/
   assistant/
   developer-console/
   settings/
@@ -114,6 +123,10 @@ Backend:
 - pandas
 - numpy
 - joblib
+
+Phase 4 still uses deterministic Python services. spaCy/NLTK integrations are
+reserved for deeper NLP expansion and are not required for the current local
+demo path.
 
 ## Setup Instructions
 
@@ -199,12 +212,21 @@ Only these versioned endpoints exist in Phase 1:
 - `GET /api/v1/ml/evaluation`
 - `GET /api/v1/ml/feature-importance`
 
+## Phase 4 API Surface
+
+- `GET /api/v1/transactions/{customer_id}/insights`
+- `GET /api/v1/customers/{customer_id}/behaviour`
+- `POST /api/v1/recommendations/generate/{customer_id}`
+- `GET /api/v1/recommendations/{customer_id}`
+- `GET /api/v1/recommendation-rules`
+- `GET /api/v1/intelligence/status`
+
 ## Roadmap
 
 1. Phase 1: Enterprise foundation, configuration, SQLite, shell UI.
 2. Phase 2: Dataset ingestion, feature engineering, feature store.
 3. Phase 3: ML models, model registry, explainability.
-4. Phase 4: NLP, recommendation engine, customer intelligence engine.
+4. Phase 4: NLP intelligence, behaviour profiles, recommendation engine.
 5. Phase 5: RAG, embeddings, FAISS, AI gateway, Groq/OpenAI switching.
 6. Phase 6: Full dashboard, Customer 360, analytics, developer console, settings.
 7. Phase 7: Tests, performance, documentation, demo preparation.

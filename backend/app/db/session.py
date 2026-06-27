@@ -9,6 +9,7 @@ from app.core.config import get_settings
 from app.db.base import Base
 from app.models import (
     canonical,  # noqa: F401
+    intelligence,  # noqa: F401
     ml,  # noqa: F401
 )
 

@@ -10,13 +10,19 @@ import type {
   FeatureStoreStatus,
   HealthResponse,
   IngestionResponse,
+  BehaviourProfile,
+  IntelligenceStatusResponse,
   MLEvaluationResponse,
   ModelRegistryItem,
   ModelRegistryResponse,
   QualityReport,
+  RecommendationGenerationResponse,
+  RecommendationListResponse,
+  RecommendationRule,
   RiskPredictionResponse,
   SegmentPredictionResponse,
   SystemHealthResponse,
+  TransactionInsightsResponse,
   TrainModelResponse,
 } from "@/types/platform";
 
@@ -114,4 +120,44 @@ export function getFeatureImportance(limit = 10): Promise<FeatureImportanceRespo
       params: { limit },
     }),
   );
+}
+
+export function getTransactionInsights(
+  customerId: string,
+): Promise<TransactionInsightsResponse> {
+  return unwrap(
+    apiClient.get<TransactionInsightsResponse>(
+      `/transactions/${customerId}/insights`,
+    ),
+  );
+}
+
+export function getCustomerBehaviour(customerId: string): Promise<BehaviourProfile> {
+  return unwrap(apiClient.get<BehaviourProfile>(`/customers/${customerId}/behaviour`));
+}
+
+export function generateRecommendations(
+  customerId: string,
+): Promise<RecommendationGenerationResponse> {
+  return unwrap(
+    apiClient.post<RecommendationGenerationResponse>(
+      `/recommendations/generate/${customerId}`,
+    ),
+  );
+}
+
+export function getRecommendations(
+  customerId: string,
+): Promise<RecommendationListResponse> {
+  return unwrap(
+    apiClient.get<RecommendationListResponse>(`/recommendations/${customerId}`),
+  );
+}
+
+export function getRecommendationRules(): Promise<RecommendationRule[]> {
+  return unwrap(apiClient.get<RecommendationRule[]>("/recommendation-rules"));
+}
+
+export function getIntelligenceStatus(): Promise<IntelligenceStatusResponse> {
+  return unwrap(apiClient.get<IntelligenceStatusResponse>("/intelligence/status"));
 }

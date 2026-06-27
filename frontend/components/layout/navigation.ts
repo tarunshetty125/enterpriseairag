@@ -7,8 +7,11 @@ import {
   Gauge,
   Layers3,
   LayoutDashboard,
+  LineChart,
+  ListChecks,
   Settings,
   ShieldCheck,
+  Sparkles,
   Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -29,6 +32,13 @@ export const navigation: NavigationItem[] = [
   { label: "Model Registry", href: "/model-registry", icon: Brain },
   { label: "Risk Prediction", href: "/risk-prediction", icon: Gauge },
   { label: "Segmentation", href: "/segmentation", icon: Boxes },
+  {
+    label: "Transaction Intelligence",
+    href: "/transaction-intelligence",
+    icon: LineChart,
+  },
+  { label: "Behaviour", href: "/behaviour", icon: ListChecks },
+  { label: "Recommendations", href: "/recommendations", icon: Sparkles },
   { label: "AI Assistant", href: "/assistant", icon: Bot },
   { label: "Developer Console", href: "/developer-console", icon: Gauge },
   { label: "Settings", href: "/settings", icon: Settings },

@@ -14,6 +14,13 @@ from app.models.canonical import (
     Product,
     Transaction,
 )
+from app.models.intelligence import (
+    BehaviourProfile,
+    Recommendation,
+    RecommendationHistory,
+    RecommendationRule,
+    TransactionInsight,
+)
 from app.models.ml import MLModelRegistry
 from app.schemas.customers import (
     CustomerDetailResponse,
@@ -25,6 +32,13 @@ from app.schemas.customers import (
     TransactionResponse,
 )
 from app.schemas.datasets import DatasetMetadataResponse, IngestionRunResponse
+from app.schemas.intelligence import (
+    BehaviourProfileResponse,
+    RecommendationHistoryResponse,
+    RecommendationResponse,
+    RecommendationRuleResponse,
+    TransactionInsightResponse,
+)
 from app.schemas.ml import (
     FeatureContributionResponse,
     ModelRegistryItemResponse,
@@ -156,6 +170,94 @@ def serialize_product(product: Product) -> ProductResponse:
         credit_limit=product.credit_limit,
         revolving_balance=product.revolving_balance,
         revenue=product.revenue,
+    )
+
+
+def serialize_transaction_insight(
+    insight: TransactionInsight,
+    transaction: Transaction,
+) -> TransactionInsightResponse:
+    return TransactionInsightResponse(
+        id=insight.id,
+        transaction_id=insight.transaction_id,
+        customer_id=insight.customer_id,
+        amount=transaction.amount,
+        direction=transaction.direction,
+        transaction_type=transaction.transaction_type,
+        raw_description=insight.raw_description,
+        category=insight.category,
+        keywords=list(insight.keywords or []),
+        entities=dict(insight.entities or {}),
+        sentiment_label=insight.sentiment_label,
+        sentiment_score=insight.sentiment_score,
+        lifestyle_indicators=list(insight.lifestyle_indicators or []),
+        processed_at=insight.processed_at,
+    )
+
+
+def serialize_behaviour_profile(
+    profile: BehaviourProfile,
+) -> BehaviourProfileResponse:
+    return BehaviourProfileResponse(
+        customer_id=profile.customer_id,
+        profile_version=profile.profile_version,
+        summary=profile.summary,
+        flags=list(profile.flags or []),
+        lifestyle_indicators=list(profile.lifestyle_indicators or []),
+        category_spend=dict(profile.category_spend or {}),
+        category_counts=dict(profile.category_counts or {}),
+        monthly_trends=list(profile.monthly_trends or []),
+        top_merchants=list(profile.top_merchants or []),
+        features=dict(profile.features or {}),
+        processing_time_ms=profile.processing_time_ms,
+        generated_at=profile.generated_at,
+    )
+
+
+def serialize_recommendation_rule(
+    rule: RecommendationRule,
+) -> RecommendationRuleResponse:
+    return RecommendationRuleResponse(
+        id=rule.id,
+        rule_id=rule.rule_id,
+        product_name=rule.product_name,
+        description=rule.description,
+        conditions=dict(rule.conditions or {}),
+        base_score=rule.base_score,
+        version=rule.version,
+        active=bool(rule.active),
+    )
+
+
+def serialize_recommendation(
+    recommendation: Recommendation,
+) -> RecommendationResponse:
+    return RecommendationResponse(
+        id=recommendation.id,
+        customer_id=recommendation.customer_id,
+        rule_id=recommendation.rule_id,
+        product_name=recommendation.product_name,
+        suitability_score=recommendation.suitability_score,
+        confidence=recommendation.confidence,
+        reason=recommendation.reason,
+        supporting_features=list(recommendation.supporting_features or []),
+        business_explanation=recommendation.business_explanation,
+        recommendation_version=recommendation.recommendation_version,
+        status=recommendation.status,
+        generated_at=recommendation.generated_at,
+    )
+
+
+def serialize_recommendation_history(
+    history: RecommendationHistory,
+) -> RecommendationHistoryResponse:
+    return RecommendationHistoryResponse(
+        id=history.id,
+        customer_id=history.customer_id,
+        recommendation_id=history.recommendation_id,
+        action=history.action,
+        details=dict(history.details or {}),
+        created_at=history.created_at,
     )
 
 
