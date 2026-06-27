@@ -1,17 +1,40 @@
 # Canonical Schema
 
-Phase 2 normalizes unrelated public datasets into one reusable financial schema.
+The canonical schema normalizes four unrelated public datasets into one coherent customer model.
 
 ## Tables
 
-- `customers`: canonical customer profile fields, source references, and synthetic customer IDs.
-- `loans`: loan records linked to customers.
-- `transactions`: transaction records linked to customers.
-- `products`: customer product holdings.
-- `feature_snapshots`: versioned feature payloads for future ML and AI phases.
-- `dataset_metadata`: dataset source, version, checksum, row count, import time, and status.
-- `ingestion_runs`: each ingestion execution and result.
+| Table | Primary Key | Description |
+|-------|-------------|-------------|
+| `customers` | `customer_id` (String) | Unified customer profiles |
+| `loans` | `id` (Integer) | Loan records linked to customers |
+| `transactions` | `id` (Integer) | Transaction records linked to customers |
+| `products` | `id` (Integer) | Financial products held by customers |
 
-## Design Choices
+All tables include `source_dataset` and `source_record_id` columns for traceability back to the original CSV row.
 
-The schema is intentionally broad enough for feature engineering but small enough for a local interview demo. Prediction tables are excluded from Phase 2 because no ML training or inference is implemented yet.
+## Customer Fields
+
+| Field | Type | Source |
+|-------|------|--------|
+| `customer_id` | String(32) | Deterministic hash (see synthetic join strategy) |
+| `full_name` | String | Churn dataset or generated |
+| `age` | Integer | Churn dataset |
+| `gender` | String | Churn / credit card dataset |
+| `geography` | String | Churn dataset |
+| `education` | String | Credit card dataset |
+| `income_category` | String | Credit card dataset |
+| `estimated_income` | Float | Churn dataset |
+| `credit_score` | Integer | Churn dataset |
+| `savings_balance` | Float | Derived from products |
+| `tenure_months` | Integer | Churn dataset |
+
+## Relationships
+
+Each customer has zero-to-many loans, transactions, and products. Feature snapshots are computed from these relationships.
+
+## Design Notes
+
+- UniqueConstraints on `(source_dataset, source_record_id)` prevent duplicate imports.
+- `external_references` (JSON) stores source-specific metadata that doesn't fit the canonical schema.
+- All timestamps use UTC timezone-aware datetimes.

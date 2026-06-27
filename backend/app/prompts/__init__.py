@@ -1,1 +1,1 @@
-"""Prompt management for Phase 5 AI Gateway workflows."""
+"""Prompt management for AI Gateway workflows."""

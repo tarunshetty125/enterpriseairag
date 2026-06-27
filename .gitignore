@@ -26,7 +26,8 @@ yarn-error.log*
 
 # Environment
 .env
-.env.*
+.env.local
+.env.*.local
 !.env.example
 
 # Local artifacts
@@ -46,7 +47,18 @@ vectorstore/*
 !models/.gitkeep
 !vectorstore/.gitkeep
 
-# OS / editor
+# OS artifacts - macOS
 .DS_Store
+
+# OS artifacts - Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor / IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+*~

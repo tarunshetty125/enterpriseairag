@@ -1,3 +1,9 @@
+"""OpenAI provider adapter.
+
+Extends OpenAICompatibleProvider with OpenAI-specific defaults.
+Uses the standard OpenAI API at https://api.openai.com/v1.
+"""
+
 from __future__ import annotations
 
 from app.providers.base import ProviderModel

@@ -8,7 +8,7 @@ from app.models.ml import MLModelRegistry
 
 
 class MLTrainingService:
-    """Explicit training entry point for Phase 3 models."""
+    """Explicit training entry point for ML models."""
 
     def __init__(self, session: Session) -> None:
         self.session = session

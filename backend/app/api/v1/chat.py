@@ -1,3 +1,8 @@
+"""Chat API routes.
+
+RAG-grounded chat with policy retrieval, citations, and session management.
+"""
+
 from __future__ import annotations
 
 from typing import Annotated

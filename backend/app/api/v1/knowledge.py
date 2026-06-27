@@ -1,3 +1,8 @@
+"""Knowledge Base API routes.
+
+Policy document ingestion, document listing, and RAG index status.
+"""
+
 from __future__ import annotations
 
 from typing import Annotated

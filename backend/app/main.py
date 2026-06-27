@@ -1,3 +1,9 @@
+"""FastAPI application entry point.
+
+Creates the application with CORS, request context logging,
+database initialization, and versioned API routing.
+"""
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator

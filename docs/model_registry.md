@@ -2,38 +2,29 @@
 
 The model registry stores metadata for every trained model version in SQLite.
 
-## Table
+## Table: `ml_model_registry`
 
-`ml_model_registry`
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer (PK) | Auto-incrementing ID |
+| `model_name` | String | e.g., `risk_prediction`, `customer_segmentation` |
+| `version` | String | Timestamped version string |
+| `algorithm` | String | e.g., `RandomForest`, `KMeans` |
+| `training_date` | DateTime | When training completed |
+| `metrics` | JSON | Full metrics dictionary |
+| `accuracy`, `precision`, `recall`, `f1` | Float | Top-level metrics (nullable for clustering) |
+| `features_used` | JSON | List of feature names |
+| `artifact_path` | Text | Path to joblib file on disk |
+| `dataset_version` | String | Dataset checksum at training time |
+| `feature_version` | String | Feature store version |
+| `active_model` | Integer | 1 = active, 0 = inactive |
+| `training_time_ms` | Float | Training duration |
 
-Tracked fields:
+## Lifecycle
 
-- Model name
-- Version
-- Algorithm
-- Training date
-- Accuracy
-- Precision
-- Recall
-- F1
-- Full metrics payload
-- Features used
-- Artifact path
-- Dataset version
-- Feature version
-- Active model flag
-- Training time
-- Latest inference time
-- Training metadata
+1. **Train** — creates a new registry entry with `active_model=0`.
+2. **Evaluate** — metrics are stored at training time.
+3. **Activate** — sets `active_model=1` and deactivates previous versions of the same model name.
+4. **Predict** — the prediction pipeline loads the active model's artifact from disk.
 
-## Active Models
-
-Only one active version is allowed per model name. Registering a new version
-automatically deactivates older versions of the same model. The UI can also
-activate a previous version through the registry endpoint.
-
-## Prediction Logs
-
-`ml_prediction_logs` records local inference calls with customer ID, model
-version, prediction, confidence, and inference latency. These counts feed the
-developer console and ML dashboard.
+Only one version per model name can be active at a time. The first trained version is auto-activated.

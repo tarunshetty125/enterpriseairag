@@ -7,8 +7,8 @@ customer-level behavioural intelligence.
 
 - Canonical customer profile
 - Canonical transactions
-- Phase 2 feature snapshot
-- Phase 4 transaction insights
+- Feature snapshot
+- Transaction insights
 
 ## Outputs
 
@@ -44,12 +44,10 @@ text model is used.
 
 ## Summary Generation
 
-The summary is deterministic template text. It is intentionally not an AI
-summary. This keeps Phase 4 within scope and makes the result reproducible
-during demos and tests.
+The summary is deterministic template text, not AI-generated. This keeps the
+result reproducible during demos and tests.
 
 ## Versioning
 
 Profiles store `behaviour_rules_v1`. Transaction-level inputs store
-`nlp_rules_v1`. Future phases can use these versions to explain which logic
-produced a customer profile.
+`nlp_rules_v1`. These versions track which logic produced a customer profile.

@@ -1,3 +1,8 @@
+"""Machine Learning API routes.
+
+Model training, prediction, registry, evaluation, and feature importance.
+"""
+
 from __future__ import annotations
 
 from typing import Annotated

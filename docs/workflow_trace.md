@@ -1,28 +1,38 @@
 # Workflow Trace
 
-Workflow tracing is implemented as a lightweight execution timeline inside
-`CustomerIntelligenceService`. It intentionally avoids a new workflow framework
-so the project stays aligned with the approved architecture.
+Workflow tracing records the execution timeline of a Customer Intelligence report. It captures each stage's source, status, and duration.
 
-## Tracked Stages
+## Implementation
 
-- Customer Profile
-- Feature Store
-- Risk Model
-- Segmentation
-- Behaviour Engine
-- Transaction Intelligence
-- Recommendation Engine
-- RAG
-- Provider
-- Customer Intelligence Report
-- Report Cache
+The trace is implemented as a lightweight list inside `CustomerIntelligenceService`. Each stage appends a trace entry before and after execution. No external tracing framework is needed.
 
-Each stage records stage name, source system, status, duration in milliseconds,
-and human-readable details.
+## Trace Entry Format
 
-## Why It Matters
+```json
+{
+  "stage": "Risk Model",
+  "source": "ml_prediction",
+  "status": "success",
+  "durationMs": 18.87,
+  "details": "RiskPredictionResult"
+}
+```
 
-The trace turns the demo from a black-box chatbot into an observable AI
-platform. Interviewers can see where data, ML, retrieval, prompts, and provider
-execution contribute to the final report.
+## Stages
+
+| Stage | Source | Description |
+|-------|--------|-------------|
+| Customer Profile | `customers` | Load canonical profile |
+| Feature Store | `feature_snapshots` | Load feature snapshot |
+| Risk Model | `ml_prediction` | Run risk prediction |
+| Segmentation | `ml_prediction` | Run segmentation |
+| Behaviour Engine | `behaviour_profiles` | Load/generate behaviour profile |
+| Transaction Intelligence | `transaction_insights` | Load NLP insights |
+| Recommendation Engine | `recommendations` | Generate recommendations |
+| RAG | `knowledge_chunks` | Retrieve policy evidence |
+| Provider | `ai_gateway` | LLM call through gateway |
+| Customer Intelligence Report | `customer_intelligence_reports` | Final assembly |
+
+## Access
+
+The workflow trace is accessible via `GET /api/v1/customers/{id}/workflow-trace` and is also included in the full intelligence report response.

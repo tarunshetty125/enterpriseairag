@@ -1,3 +1,8 @@
+"""Customer Intelligence API routes.
+
+Report generation, retrieval, export, and workflow tracing endpoints.
+"""
+
 from __future__ import annotations
 
 from typing import Annotated

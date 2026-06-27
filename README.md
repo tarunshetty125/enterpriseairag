@@ -1,273 +1,232 @@
 # Enterprise AI Financial Customer Intelligence Platform
 
-Local, interview-ready AI platform foundation for a financial customer intelligence system. The project is intentionally scoped as a technical showcase, not a production banking application.
+Local, interview-ready AI platform that composes machine learning, NLP, RAG, explainable AI, and provider-abstracted LLM integration into a unified financial customer intelligence system.
 
-## Project Overview
+## What This Project Does
 
-This repository will evolve into an enterprise-style AI platform demonstrating machine learning, NLP, RAG, explainable AI, provider abstraction, and a modern React + FastAPI architecture.
+Given a customer ID, the platform generates a **Customer Intelligence Report** by orchestrating:
 
-Phase 1 establishes the foundation:
+1. **Canonical data** — normalized from four public financial datasets into one schema.
+2. **Feature store** — deterministic, versioned customer features.
+3. **ML predictions** — Random Forest risk scoring and KMeans segmentation.
+4. **NLP intelligence** — transaction classification, entity extraction, sentiment, and behaviour profiling.
+5. **Recommendation engine** — rules-based product suitability scoring with explainable reasons.
+6. **RAG retrieval** — policy document search with FAISS indexing and grounded citations.
+7. **AI Gateway** — provider-abstracted LLM call through Groq or OpenAI with retry, metrics, and token accounting.
 
-- Next.js 15 frontend shell with TypeScript, Tailwind CSS, shadcn/ui conventions, TanStack Query, Axios, and Lucide icons.
-- FastAPI backend with versioned APIs, typed Pydantic Settings, SQLAlchemy 2.x, Alembic, SQLite initialization, and structured logging.
-- Enterprise module boundaries for the approved AI platform architecture.
-- Live Developer Console foundation backed by real health and settings endpoints.
+The final report includes structured evidence, citations, confidence scores, feature importance, workflow tracing, and exports to PDF/Markdown/JSON.
 
-## Architecture Summary
+## Architecture
 
-The approved architecture is frozen for future phases:
+```mermaid
+graph TD
+    FE[Next.js Frontend] --> API[FastAPI /api/v1]
+    API --> DS[Dataset Service]
+    API --> FS[Feature Store]
+    API --> ML[ML Platform]
+    API --> NLP[NLP Pipeline]
+    API --> REC[Recommendation Engine]
+    API --> RAG[RAG Service]
+    API --> CI[Customer Intelligence]
+    API --> GW[AI Gateway]
 
-```text
-FastAPI
-  -> Workflow Engine
-  -> Feature Store / ML / NLP / Recommendation / RAG
-  -> Context Builder
-  -> Prompt Builder
-  -> AI Gateway
-  -> Provider Manager
-  -> Groq / OpenAI
-```
+    CI --> FS
+    CI --> ML
+    CI --> NLP
+    CI --> REC
+    CI --> RAG
+    CI --> GW
 
-Phase 1 does not implement ML, NLP, RAG, AI providers, workflow logic, or business logic. It creates the clean boundaries those systems will use.
+    GW --> PM[Provider Manager]
+    PM --> GROQ[Groq API]
+    PM --> OAI[OpenAI API]
 
-Phase 2 adds the enterprise data foundation: public dataset ingestion, canonical schema, SQLite persistence, deterministic synthetic joins, data quality reporting, and a versioned feature store. It still does not implement ML predictions, AI providers, RAG, or LLM workflows.
+    RAG --> EMB[Embedding Manager]
+    RAG --> VS[FAISS Vector Store]
+    RAG --> CB[Context Builder]
 
-Phase 3 adds the enterprise machine learning platform: explicit model training,
-versioned artifacts, SQLite model registry, risk prediction, customer
-segmentation, evaluation metrics, prediction logging, and explainability. It
-still does not implement NLP, recommendations, AI providers, RAG, or chat.
+    ML --> MR[Model Registry]
+    ML --> AS[Artifact Store]
 
-Phase 4 adds deterministic NLP intelligence and rules-based recommendations:
-transaction classification, entity extraction, sentiment signals, behaviour
-profiles, explainable product recommendations, persistence, API endpoints, and
-connected frontend pages. It still does not implement AI providers, RAG,
-LangChain, FAISS, workflow orchestration, prompt builders, or chat.
+    subgraph SQLite
+        DB[(enterprise_ai_financial_platform.db)]
+    end
 
-Phase 5 adds the enterprise AI platform layer: AI Gateway, runtime provider
-switching, prompt registry, structured context builder, local policy RAG,
-knowledge ingestion, citations, chat memory, and connected AI UI pages. It still
-does not implement customer intelligence reports, workflow orchestration, or
-autonomous agents.
-
-## Folder Structure
-
-```text
-enterprise-ai-financial-platform/
-  frontend/       # Next.js 15 App Router application
-  backend/        # FastAPI application
-  data/           # Raw, processed, and policy data folders
-  models/         # Versioned local ML artifacts
-  vectorstore/    # Future FAISS artifacts
-  docs/           # Project documentation
-  scripts/        # Future development scripts
-```
-
-Backend module boundaries:
-
-```text
-backend/app/
-  api/v1/
-  core/
-  db/
-  gateway/
-  providers/
-  workflow/
-  feature_store/
-  ml/
-  nlp/
-  rag/
-  recommendation/
-  intelligence/
-  analytics/
-  developer_console/
-  settings/
-  utils/
-```
-
-Frontend route shell:
-
-```text
-frontend/app/
-  dashboard/
-  customers/
-  analytics/
-  model-registry/
-  risk-prediction/
-  segmentation/
-  transaction-intelligence/
-  behaviour/
-  recommendations/
-  knowledge/
-  assistant/
-  prompts/
-  developer-console/
-  settings/
+    DS --> DB
+    FS --> DB
+    ML --> DB
+    NLP --> DB
+    REC --> DB
+    RAG --> DB
+    CI --> DB
+    GW --> DB
 ```
 
 ## Technology Stack
 
-Frontend:
+| Layer | Technologies |
+|-------|-------------|
+| Frontend | Next.js 15, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, Recharts |
+| Backend | FastAPI, SQLAlchemy 2.x, Alembic, Pydantic Settings |
+| ML | scikit-learn, pandas, numpy, joblib |
+| NLP | Deterministic Python (rules-based classification, extraction, sentiment) |
+| RAG | FAISS, sentence-transformers, LangChain text splitters |
+| AI Providers | Groq, OpenAI (via OpenAI-compatible HTTP adapter) |
+| Database | SQLite |
+| HTTP Client | httpx |
 
-- Next.js 15 App Router
-- TypeScript
-- Tailwind CSS
-- shadcn/ui conventions
-- TanStack Query
-- Axios
-- React Hook Form
-- Zod
-- Recharts
-- Lucide Icons
+## Quick Start
 
-Backend:
-
-- FastAPI
-- SQLAlchemy 2.x
-- Alembic
-- SQLite
-- Pydantic Settings
-- Structured JSON logging
-- scikit-learn
-- pandas
-- numpy
-- joblib
-
-Phase 4 still uses deterministic Python services. spaCy/NLTK integrations are
-reserved for deeper NLP expansion and are not required for the current local
-demo path.
-
-## Setup Instructions
-
-Copy environment defaults:
+**Cross-platform (recommended):**
 
 ```bash
-cp .env.example .env
+python scripts/setup_environment.py
+python scripts/run_backend.py     # Terminal 1
+python scripts/run_frontend.py    # Terminal 2
 ```
 
-Backend:
+**Manual (macOS / Linux):**
 
 ```bash
+# 1. Clone and configure
+cp .env.example .env
+# Edit .env and set AI_GROQ_API_KEY
+
+# 2. Backend
 cd backend
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+pip install -e ".[dev]"
 uvicorn app.main:app --reload
-```
 
-Frontend:
-
-```bash
+# 3. Frontend (separate terminal)
 cd frontend
 npm install
 npm run dev
 ```
 
-Default URLs:
+**Manual (Windows PowerShell):**
 
-- Backend API: `http://127.0.0.1:8000/api/v1/health`
-- Frontend: `http://localhost:3000`
+```powershell
+copy .env.example .env
+# Edit .env and set AI_GROQ_API_KEY
 
-## Development Workflow
-
-Backend quality checks:
-
-```bash
 cd backend
-ruff check .
-black --check .
-mypy app
-alembic current
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+uvicorn app.main:app --reload
+
+# Separate terminal
+cd frontend
+npm install
+npm run dev
 ```
 
-Frontend quality checks:
+After both servers are running:
 
 ```bash
-cd frontend
-npm run typecheck
-npm run lint
-npm run build
+# 4. Ingest datasets, train models, index knowledge
+curl -X POST http://127.0.0.1:8000/api/v1/datasets/ingest
+curl -X POST http://127.0.0.1:8000/api/v1/ml/train/risk
+curl -X POST http://127.0.0.1:8000/api/v1/ml/train/segmentation
+curl -X POST http://127.0.0.1:8000/api/v1/knowledge/ingest
 ```
 
-## Phase 1 API Surface
+Open `http://localhost:3000` to access the platform.
 
-Only these versioned endpoints exist in Phase 1:
+See [docs/platform_compatibility.md](docs/platform_compatibility.md) for detailed Windows and macOS setup.
 
-- `GET /api/v1/health`
-- `GET /api/v1/system-health`
-- `GET /api/v1/settings/ai-processing`
+## Project Structure
 
-## Phase 2 API Surface
+```text
+enterprise-ai-financial-platform/
+  backend/             # FastAPI application
+    app/
+      api/v1/          # 45 versioned REST endpoints
+      core/            # Configuration, logging
+      db/              # SQLAlchemy engine, session, base
+      datasets/        # Dataset ingestion, normalization, linking
+      feature_store/   # Deterministic feature engineering
+      gateway/         # AI Gateway, metrics, retry, routing
+      intelligence/    # Customer Intelligence reports, context builder
+      ml/              # Training, prediction, registry, explainability
+      models/          # SQLAlchemy ORM models (20 tables)
+      nlp/             # Transaction classification, entities, sentiment, behaviour
+      prompts/         # File-backed prompt templates
+      providers/       # Groq, OpenAI, provider abstraction
+      rag/             # Embeddings, vector store, retrieval, chat
+      recommendation/  # Rules-based product recommendations
+      schemas/         # Pydantic request/response schemas
+    tests/             # Integration tests by phase
+  frontend/            # Next.js 15 application
+    app/               # 17 pages (App Router)
+    components/        # Reusable UI components
+    hooks/             # Custom React hooks
+    lib/               # API client, utilities
+    types/             # TypeScript type definitions
+  data/                # Raw datasets, processed data, policy documents
+  models/              # Versioned ML artifacts (joblib)
+  vectorstore/         # FAISS index and knowledge records
+  docs/                # Architecture and design documentation
+  scripts/             # Development and verification scripts
+```
 
-- `GET /api/v1/datasets`
-- `POST /api/v1/datasets/ingest`
-- `GET /api/v1/datasets/status`
-- `GET /api/v1/customers`
-- `GET /api/v1/customers/{id}`
-- `GET /api/v1/customers/{id}/features`
-- `GET /api/v1/data-quality`
-- `GET /api/v1/feature-store/status`
+## API Surface
 
-## Phase 3 API Surface
+| Domain | Endpoints | Key Routes |
+|--------|-----------|------------|
+| Health | 2 | `GET /health`, `GET /system-health` |
+| Datasets | 3 | `POST /datasets/ingest`, `GET /datasets/status` |
+| Customers | 3 | `GET /customers`, `GET /customers/{id}`, `GET /customers/{id}/features` |
+| ML | 9 | `POST /ml/train/risk`, `POST /ml/predict/risk`, `GET /ml/models` |
+| Intelligence | 6 | `GET /transactions/{id}/insights`, `GET /customers/{id}/behaviour` |
+| Recommendations | 3 | `POST /recommendations/generate/{id}`, `GET /recommendation-rules` |
+| Knowledge | 3 | `POST /knowledge/ingest`, `GET /knowledge/documents` |
+| Chat | 3 | `POST /chat`, `GET /chat/sessions` |
+| Providers | 5 | `GET /providers`, `POST /providers/switch`, `GET /providers/status` |
+| Customer Intelligence | 5 | `POST /customers/{id}/intelligence-report`, `GET /intelligence/showcase-metrics` |
+| Prompts | 2 | `GET /prompts`, `GET /prompts/{name}` |
+| Settings | 1 | `GET /settings/ai-processing` |
 
-- `POST /api/v1/ml/train/risk`
-- `POST /api/v1/ml/train/segmentation`
-- `GET /api/v1/ml/models`
-- `GET /api/v1/ml/models/{model}`
-- `POST /api/v1/ml/models/{model_id}/activate`
-- `POST /api/v1/ml/predict/risk`
-- `POST /api/v1/ml/predict/segment`
-- `GET /api/v1/ml/evaluation`
-- `GET /api/v1/ml/feature-importance`
+All endpoints are prefixed with `/api/v1`.
 
-## Phase 4 API Surface
+## Documentation
 
-- `GET /api/v1/transactions/{customer_id}/insights`
-- `GET /api/v1/customers/{customer_id}/behaviour`
-- `POST /api/v1/recommendations/generate/{customer_id}`
-- `GET /api/v1/recommendations/{customer_id}`
-- `GET /api/v1/recommendation-rules`
-- `GET /api/v1/intelligence/status`
+Detailed documentation is in the [docs/](docs/) directory:
 
-## Phase 5 API Surface
+- [Architecture](docs/architecture.md) — system design and component overview
+- [Architecture Decisions](docs/architecture_decisions.md) — design rationale and trade-offs
+- [API Reference](docs/api_reference.md) — endpoint details
+- [Database Schema](docs/database.md) — all 20 SQLite tables
+- [AI Gateway](docs/ai_gateway.md) — LLM request routing and metrics
+- [Provider Architecture](docs/provider_architecture.md) — runtime provider switching
+- [RAG Pipeline](docs/rag_pipeline.md) — policy retrieval and citations
+- [Machine Learning](docs/machine_learning.md) — training, prediction, registry
+- [NLP Pipeline](docs/nlp_pipeline.md) — transaction intelligence
+- [Recommendation Engine](docs/recommendation_engine.md) — rules-based scoring
+- [Customer Intelligence](docs/customer_intelligence.md) — report orchestration
+- [Demo Guide](docs/demo_guide.md) — interview walkthrough
+- [Project Metrics](docs/project_metrics.md) — repository statistics
+- [Known Limitations](docs/known_limitations.md) — scope and future work
 
-- `GET /api/v1/providers`
-- `GET /api/v1/providers/models`
-- `POST /api/v1/providers/switch`
-- `GET /api/v1/providers/status`
-- `PATCH /api/v1/providers/settings`
-- `POST /api/v1/knowledge/ingest`
-- `GET /api/v1/knowledge/documents`
-- `GET /api/v1/knowledge/status`
-- `POST /api/v1/chat`
-- `GET /api/v1/chat/sessions`
-- `GET /api/v1/chat/{session_id}`
-- `GET /api/v1/prompts`
-- `GET /api/v1/prompts/{name}`
+## Development
 
-## Final Showcase API Surface
+```bash
+# Backend
+cd backend
+ruff check .              # Lint
+black --check .           # Format check
+mypy app                  # Type check
+pytest tests/ -v          # Tests
 
-- `POST /api/v1/customers/{customer_id}/intelligence-report`
-- `GET /api/v1/customers/{customer_id}/intelligence-report`
-- `GET /api/v1/customers/{customer_id}/workflow-trace`
-- `GET /api/v1/customers/{customer_id}/intelligence-report/export`
-- `GET /api/v1/intelligence/reports/recent`
-- `GET /api/v1/intelligence/showcase-metrics`
+# Frontend
+cd frontend
+npm run lint              # ESLint
+npm run typecheck         # TypeScript
+npm run build             # Production build
+```
 
-## Final Showcase
+## License
 
-The final phase adds the flagship Customer Intelligence Report. It composes the
-canonical data foundation, feature store, machine learning predictions,
-transaction NLP, recommendation engine, policy RAG, prompt registry, AI Gateway,
-and active provider into a single enterprise report. Reports are grounded in
-structured evidence, include citations and explainability, support workflow
-tracing, cache repeated runs, and export to PDF, Markdown, or JSON.
-
-## Roadmap
-
-1. Phase 1: Enterprise foundation, configuration, SQLite, shell UI.
-2. Phase 2: Dataset ingestion, feature engineering, feature store.
-3. Phase 3: ML models, model registry, explainability.
-4. Phase 4: NLP intelligence, behaviour profiles, recommendation engine.
-5. Phase 5: RAG, embeddings, FAISS-compatible index, AI gateway, Groq/OpenAI switching.
-6. Final Phase: Customer Intelligence Platform and interview showcase.
+This project is a local technical showcase for interview demonstration purposes.

@@ -51,7 +51,7 @@ class DatabaseSettings(BaseSettings):
     @property
     def sqlite_path(self) -> Path:
         if not self.url.startswith("sqlite:///"):
-            msg = "Only SQLite URLs are supported in Phase 1."
+            msg = "Only SQLite URLs are supported."
             raise ValueError(msg)
 
         raw_path = self.url.replace("sqlite:///", "", 1)

@@ -1,14 +1,15 @@
 # Recommendation Engine
 
-Phase 4 implements a deterministic, rules-based product recommendation engine.
-It does not use LLMs or RAG.
+The recommendation engine is deterministic and rules-based. It scores product
+suitability using customer features, ML predictions, and behaviour profiles
+without using LLMs or RAG.
 
 ## Inputs
 
 - Customer profile
 - Feature store values
-- Risk level from the active Phase 3 model when available
-- Segment label from the active Phase 3 model when available
+- Risk level from the active ML model
+- Segment label from the active ML model
 - Behaviour profile
 - Existing products
 - Recommendation rule catalog

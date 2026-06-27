@@ -1,33 +1,34 @@
 # Explainability
 
-Phase 3 uses model-native feature importance for explainability.
+The platform uses model-native feature importance for explainability. Every prediction and recommendation includes structured evidence.
 
 ## Risk Explanations
 
-The Random Forest artifact stores feature importances sorted by contribution.
-Prediction responses include:
+Risk predictions return:
+- **Feature importance** — ranked list from `RandomForestClassifier.feature_importances_`.
+- **Individual feature values** — the customer's actual values for each feature.
+- **Confidence score** — the model's probability for the predicted class.
+- **Risk level mapping** — Low / Medium / High derived from confidence thresholds.
 
-- Risk level
-- Confidence
-- Class probabilities
-- Top model features
-- Feature values
-- Business explanation
+## Recommendation Explanations
 
-The business explanation is generated only from feature names, feature values,
-and model importances. It does not infer unsupported causes.
+Each recommendation includes:
+- **Reason** — human-readable explanation of why the product was recommended.
+- **Supporting features** — list of features with their values and impact scores.
+- **Suitability score** — composite score (0-100) from rule evaluation.
+- **Business explanation** — narrative explanation derived from rule conditions.
 
-Example:
+## Intelligence Report Evidence
 
-`The model predicted High risk because the highest-weighted features for this customer were high debt to income, low savings ratio, and low credit score.`
+The Customer Intelligence Report exposes:
+- ML predictions with feature importance drivers.
+- Behaviour profile flags and lifestyle indicators.
+- Recommendation reasons with supporting features.
+- Retrieved policy chunks with similarity scores.
+- Citations linking to source documents.
+- Token usage, latency, and provider metadata.
+- Full workflow trace with per-stage timing.
 
-## Segmentation Explanations
+## Design Choice
 
-KMeans predictions return:
-
-- Business segment label
-- Confidence derived from distance to centroids
-- Nearest centroid distance
-- Centroid feature summary
-
-Cluster numbers remain internal.
+The platform uses model-native importance rather than post-hoc methods like SHAP or LIME. This keeps the demo fast, dependency-light, and easy to explain. Adding SHAP is listed as a future improvement.

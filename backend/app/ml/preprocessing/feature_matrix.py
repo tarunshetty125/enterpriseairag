@@ -113,7 +113,7 @@ class FeatureMatrixBuilder:
             )
         )
         if not snapshots:
-            msg = "No feature snapshots are available. Run Phase 2 ingestion first."
+            msg = "No feature snapshots are available. Run dataset ingestion first."
             raise ValueError(msg)
         return snapshots
 

@@ -1,31 +1,26 @@
 # Synthetic Join Strategy
 
-The public datasets used in Phase 2 do not share real customer IDs. To create a coherent local demo without inventing random joins, the platform uses deterministic synthetic linking.
+The public datasets do not share real customer IDs. The platform uses deterministic synthetic linking to create a coherent local demo.
 
 ## Customer ID Generation
 
-Primary customer datasets generate IDs with:
+A deterministic hash function generates `customer_id` values from source record attributes:
 
-```text
-CUST-<sha256(dataset_namespace|source_record_id)[:12]>
+```
+customer_id = "CUST-" + SHA256(source_dataset + ":" + source_record_id)[:12]
 ```
 
-The same source record always produces the same canonical customer ID.
+This ensures:
+- The same source record always produces the same customer ID.
+- Different datasets can link to the same customer when attribute matching succeeds.
+- IDs are reproducible across ingestion runs.
 
 ## Cross-Dataset Linking
 
-Datasets without a natural customer profile, such as loan and transaction datasets, are linked to existing customer anchors by hashing:
+The linker matches customers across datasets using overlapping attributes (e.g., age, gender, geography). When a match is found, the existing `customer_id` is reused. When no match is found, a new customer is created.
 
-```text
-sha256(dataset_namespace|source_record_id) % number_of_anchor_customers
-```
+This is intentionally approximate — the goal is a realistic-looking demo, not production entity resolution.
 
-This creates repeatable joins across runs while clearly documenting that the relationships are synthetic for demonstration purposes.
+## Traceability
 
-## Why This Approach
-
-- Reproducible.
-- Idempotent.
-- No random seeds or non-deterministic joins.
-- Honest about public dataset limitations.
-- Good enough for an interview-ready local AI platform.
+Every canonical record stores `source_dataset` and `source_record_id` so the original CSV row can be traced. The `external_references` JSON field stores additional source-specific metadata.

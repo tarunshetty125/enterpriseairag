@@ -1,3 +1,9 @@
+"""Groq provider adapter.
+
+Extends OpenAICompatibleProvider with Groq-specific defaults.
+Groq uses an OpenAI-compatible API at https://api.groq.com/openai/v1.
+"""
+
 from __future__ import annotations
 
 from app.providers.base import ProviderModel

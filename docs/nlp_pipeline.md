@@ -1,7 +1,8 @@
 # NLP Pipeline
 
-Phase 4 implements deterministic transaction intelligence. It does not use
-LLMs, RAG, LangChain, FAISS, or AI providers.
+The NLP layer implements deterministic transaction intelligence. It uses
+rules-based classification, pattern matching, and keyword analysis — no
+LLMs, external NLP models, or API calls.
 
 ## Pipeline
 
