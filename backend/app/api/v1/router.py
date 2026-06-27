@@ -3,13 +3,17 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    chat,
     customers,
     data_quality,
     datasets,
     feature_store,
     health,
     intelligence,
+    knowledge,
     ml,
+    prompts,
+    providers,
     settings,
     system_health,
 )
@@ -24,3 +28,7 @@ api_router.include_router(data_quality.router)
 api_router.include_router(feature_store.router)
 api_router.include_router(ml.router)
 api_router.include_router(intelligence.router)
+api_router.include_router(providers.router)
+api_router.include_router(knowledge.router)
+api_router.include_router(chat.router)
+api_router.include_router(prompts.router)

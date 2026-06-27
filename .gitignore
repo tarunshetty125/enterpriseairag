@@ -35,6 +35,7 @@ data/processed/*
 data/external/*
 data/samples/*
 data/policies/*
+!data/policies/*.md
 models/*
 vectorstore/*
 !data/raw/.gitkeep

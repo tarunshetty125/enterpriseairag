@@ -1,14 +1,20 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+from typing import Annotated
 
-from app.core.config import get_settings
-from app.schemas.settings import AIProcessingSettingsResponse
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.db.session import get_db_session
+from app.providers.manager import ProviderManager
+from app.schemas.ai import AIProcessingSettingsResponse
 
 router = APIRouter(prefix="/settings", tags=["settings"])
+DbSession = Annotated[Session, Depends(get_db_session)]
 
 
 @router.get("/ai-processing", response_model=AIProcessingSettingsResponse)
-def get_ai_processing_settings() -> AIProcessingSettingsResponse:
-    settings = get_settings()
-    return AIProcessingSettingsResponse.model_validate(settings.ai)
+def get_ai_processing_settings(session: DbSession) -> AIProcessingSettingsResponse:
+    return AIProcessingSettingsResponse.model_validate(
+        ProviderManager(session).current_settings()
+    )

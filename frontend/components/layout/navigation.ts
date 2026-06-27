@@ -4,6 +4,7 @@ import {
   Boxes,
   Brain,
   Database,
+  FileText,
   Gauge,
   Layers3,
   LayoutDashboard,
@@ -39,7 +40,9 @@ export const navigation: NavigationItem[] = [
   },
   { label: "Behaviour", href: "/behaviour", icon: ListChecks },
   { label: "Recommendations", href: "/recommendations", icon: Sparkles },
+  { label: "Knowledge Base", href: "/knowledge", icon: Database },
   { label: "AI Assistant", href: "/assistant", icon: Bot },
+  { label: "Prompt Explorer", href: "/prompts", icon: FileText },
   { label: "Developer Console", href: "/developer-console", icon: Gauge },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

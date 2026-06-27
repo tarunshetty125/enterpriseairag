@@ -9,8 +9,10 @@ import {
   getFeatureStoreStatus,
   getHealth,
   getIntelligenceStatus,
+  getKnowledgeStatus,
   getMLEvaluation,
   getMLModels,
+  getProviderStatus,
   getSystemHealth,
 } from "@/lib/api/platform";
 
@@ -69,6 +71,18 @@ export function usePlatformStatus() {
     refetchInterval: 30000,
   });
 
+  const providerStatus = useQuery({
+    queryKey: ["platform", "provider-status"],
+    queryFn: getProviderStatus,
+    refetchInterval: 30000,
+  });
+
+  const knowledgeStatus = useQuery({
+    queryKey: ["platform", "knowledge-status"],
+    queryFn: getKnowledgeStatus,
+    refetchInterval: 30000,
+  });
+
   return {
     health,
     systemHealth,
@@ -79,5 +93,7 @@ export function usePlatformStatus() {
     mlModels,
     mlEvaluation,
     intelligenceStatus,
+    providerStatus,
+    knowledgeStatus,
   };
 }

@@ -30,6 +30,8 @@ export interface AIProcessingSettings {
   maxTokens: number;
   chunkSize: number;
   embeddingModel: string;
+  retrievalTopK: number;
+  similarityThreshold: number;
   conversationMemory: boolean;
 }
 
@@ -348,4 +350,127 @@ export interface IntelligenceStatusResponse {
   recommendationCount: number;
   recommendationHistoryCount: number;
   latestRecommendationAt: string | null;
+}
+
+export interface AIModel {
+  id: string;
+  name: string;
+  contextWindow: number | null;
+  supportsStreaming: boolean;
+}
+
+export interface ProviderDescriptor {
+  name: string;
+  status: string;
+  configured: boolean;
+  active: boolean;
+  latencyMs: number | null;
+  details: string;
+}
+
+export interface ProviderListResponse {
+  providers: ProviderDescriptor[];
+}
+
+export interface ProviderModelsResponse {
+  provider: string;
+  models: AIModel[];
+}
+
+export interface ProviderStatusResponse {
+  settings: AIProcessingSettings;
+  providers: ProviderDescriptor[];
+  metrics: Record<string, unknown>;
+  switchEvents: Array<Record<string, unknown>>;
+}
+
+export interface ProviderSettingsPatch {
+  temperature?: number;
+  topP?: number;
+  topK?: number;
+  maxTokens?: number;
+  chunkSize?: number;
+  embeddingModel?: string;
+  retrievalTopK?: number;
+  similarityThreshold?: number;
+  conversationMemory?: boolean;
+}
+
+export interface KnowledgeDocument {
+  id: number;
+  documentName: string;
+  documentType: string;
+  sourcePath: string;
+  version: string;
+  checksum: string;
+  status: string;
+  chunkCount: number;
+  indexedAt: string;
+}
+
+export interface KnowledgeIngestResponse {
+  documentsIndexed: number;
+  chunksIndexed: number;
+  embeddingBackend: string;
+  vectorBackend: string;
+}
+
+export interface KnowledgeStatusResponse {
+  documentCount: number;
+  chunkCount: number;
+  embeddingModel: string;
+  embeddingBackend: string;
+  vectorBackend: string;
+  faissIndexSize: number;
+  dimensions: number;
+  latestIndexedAt: string | null;
+}
+
+export interface Citation {
+  document: string;
+  section: string;
+  chunk: number;
+  similarityScore: number;
+}
+
+export interface TokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+}
+
+export interface ChatResponse {
+  sessionId: string;
+  answer: string;
+  citations: Citation[];
+  provider: string;
+  model: string;
+  latencyMs: number;
+  tokenUsage: TokenUsage;
+  retrievedChunks: number;
+  contextSize: number;
+  promptVersion: string;
+  status: string;
+}
+
+export interface ChatSession {
+  sessionId: string;
+  title: string;
+  provider: string;
+  model: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatSessionDetail {
+  session: ChatSession;
+  messages: Array<Record<string, unknown>>;
+}
+
+export interface PromptTemplate {
+  name: string;
+  version: string;
+  description: string;
+  variables: string[];
+  body: string;
 }

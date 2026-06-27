@@ -1,6 +1,9 @@
 import { apiClient, unwrap } from "@/lib/api/client";
 import type {
   AIProcessingSettings,
+  ChatResponse,
+  ChatSession,
+  ChatSessionDetail,
   CustomerDetail,
   CustomerFeatures,
   CustomerListResponse,
@@ -12,9 +15,17 @@ import type {
   IngestionResponse,
   BehaviourProfile,
   IntelligenceStatusResponse,
+  KnowledgeDocument,
+  KnowledgeIngestResponse,
+  KnowledgeStatusResponse,
   MLEvaluationResponse,
   ModelRegistryItem,
   ModelRegistryResponse,
+  PromptTemplate,
+  ProviderListResponse,
+  ProviderModelsResponse,
+  ProviderSettingsPatch,
+  ProviderStatusResponse,
   QualityReport,
   RecommendationGenerationResponse,
   RecommendationListResponse,
@@ -160,4 +171,78 @@ export function getRecommendationRules(): Promise<RecommendationRule[]> {
 
 export function getIntelligenceStatus(): Promise<IntelligenceStatusResponse> {
   return unwrap(apiClient.get<IntelligenceStatusResponse>("/intelligence/status"));
+}
+
+export function getProviders(): Promise<ProviderListResponse> {
+  return unwrap(apiClient.get<ProviderListResponse>("/providers"));
+}
+
+export function getProviderModels(provider?: string): Promise<ProviderModelsResponse> {
+  return unwrap(
+    apiClient.get<ProviderModelsResponse>("/providers/models", {
+      params: provider ? { provider } : undefined,
+    }),
+  );
+}
+
+export function switchProvider(
+  provider: string,
+  model: string,
+): Promise<AIProcessingSettings> {
+  return unwrap(
+    apiClient.post<AIProcessingSettings>("/providers/switch", {
+      provider,
+      model,
+    }),
+  );
+}
+
+export function patchProviderSettings(
+  settings: ProviderSettingsPatch,
+): Promise<AIProcessingSettings> {
+  return unwrap(apiClient.patch<AIProcessingSettings>("/providers/settings", settings));
+}
+
+export function getProviderStatus(): Promise<ProviderStatusResponse> {
+  return unwrap(apiClient.get<ProviderStatusResponse>("/providers/status"));
+}
+
+export function ingestKnowledge(): Promise<KnowledgeIngestResponse> {
+  return unwrap(apiClient.post<KnowledgeIngestResponse>("/knowledge/ingest"));
+}
+
+export function getKnowledgeDocuments(): Promise<KnowledgeDocument[]> {
+  return unwrap(apiClient.get<KnowledgeDocument[]>("/knowledge/documents"));
+}
+
+export function getKnowledgeStatus(): Promise<KnowledgeStatusResponse> {
+  return unwrap(apiClient.get<KnowledgeStatusResponse>("/knowledge/status"));
+}
+
+export function sendChatMessage(
+  message: string,
+  sessionId?: string,
+): Promise<ChatResponse> {
+  return unwrap(
+    apiClient.post<ChatResponse>("/chat", {
+      message,
+      sessionId,
+    }),
+  );
+}
+
+export function getChatSessions(): Promise<ChatSession[]> {
+  return unwrap(apiClient.get<ChatSession[]>("/chat/sessions"));
+}
+
+export function getChatSession(sessionId: string): Promise<ChatSessionDetail> {
+  return unwrap(apiClient.get<ChatSessionDetail>(`/chat/${sessionId}`));
+}
+
+export function getPrompts(): Promise<PromptTemplate[]> {
+  return unwrap(apiClient.get<PromptTemplate[]>("/prompts"));
+}
+
+export function getPrompt(name: string): Promise<PromptTemplate> {
+  return unwrap(apiClient.get<PromptTemplate>(`/prompts/${name}`));
 }

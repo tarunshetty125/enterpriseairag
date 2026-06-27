@@ -1,10 +1,5 @@
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { AIProcessingSettingsPanel } from "@/components/settings/ai-processing-settings-panel";
 
 export default function SettingsPage() {
-  return (
-    <PagePlaceholder
-      title="Settings"
-      description="AI processing settings route prepared for runtime provider controls."
-    />
-  );
+  return <AIProcessingSettingsPanel />;
 }

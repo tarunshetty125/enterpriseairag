@@ -7,6 +7,17 @@ from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def backend_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def resolve_from_backend(value: str) -> Path:
+    path = Path(value).expanduser()
+    if path.is_absolute():
+        return path
+    return (backend_root() / path).resolve()
+
+
 class AppSettings(BaseSettings):
     """Application-level configuration loaded through Pydantic Settings."""
 
@@ -47,7 +58,7 @@ class DatabaseSettings(BaseSettings):
         path = Path(raw_path).expanduser()
         if path.is_absolute():
             return path
-        return (Path.cwd() / path).resolve()
+        return resolve_from_backend(raw_path)
 
     @property
     def sqlalchemy_url(self) -> str:
@@ -68,12 +79,10 @@ class DataSettings(BaseSettings):
     processed_dir: str = "../data/processed"
     external_dir: str = "../data/external"
     samples_dir: str = "../data/samples"
+    policies_dir: str = "../data/policies"
 
     def resolve(self, value: str) -> Path:
-        path = Path(value).expanduser()
-        if path.is_absolute():
-            return path
-        return (Path.cwd() / path).resolve()
+        return resolve_from_backend(value)
 
     @property
     def raw_path(self) -> Path:
@@ -91,9 +100,13 @@ class DataSettings(BaseSettings):
     def samples_path(self) -> Path:
         return self.resolve(self.samples_dir)
 
+    @property
+    def policies_path(self) -> Path:
+        return self.resolve(self.policies_dir)
+
 
 class AISettings(BaseSettings):
-    """AI processing configuration only; providers are not implemented in Phase 1."""
+    """AI processing and provider configuration loaded through Pydantic Settings."""
 
     model_config = SettingsConfigDict(
         env_file=("../.env", ".env"),
@@ -111,6 +124,28 @@ class AISettings(BaseSettings):
     chunk_size: int = 1000
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     conversation_memory: bool = True
+    groq_api_key: str | None = None
+    openai_api_key: str | None = None
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    openai_base_url: str = "https://api.openai.com/v1"
+    retrieval_top_k: int = 4
+    similarity_threshold: float = 0.18
+    vectorstore_dir: str = "../vectorstore"
+    prompt_dir: str = "app/prompts/templates"
+
+    @property
+    def vectorstore_path(self) -> Path:
+        path = Path(self.vectorstore_dir).expanduser()
+        if path.is_absolute():
+            return path
+        return resolve_from_backend(self.vectorstore_dir)
+
+    @property
+    def prompt_path(self) -> Path:
+        path = Path(self.prompt_dir).expanduser()
+        if path.is_absolute():
+            return path
+        return resolve_from_backend(self.prompt_dir)
 
 
 class MLSettings(BaseSettings):
@@ -135,7 +170,7 @@ class MLSettings(BaseSettings):
         path = Path(self.artifact_dir).expanduser()
         if path.is_absolute():
             return path
-        return (Path.cwd() / path).resolve()
+        return resolve_from_backend(self.artifact_dir)
 
 
 class LoggingSettings(BaseSettings):

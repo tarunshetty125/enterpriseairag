@@ -34,7 +34,9 @@ export function DeveloperConsolePanel() {
     featureStoreStatus,
     dataQuality,
     intelligenceStatus,
+    knowledgeStatus,
     mlModels,
+    providerStatus,
   } = usePlatformStatus();
   const sqlite = systemHealth.data?.components.find((item) => item.name === "sqlite");
   const registeredModels = mlModels.data?.models ?? [];
@@ -44,6 +46,9 @@ export function DeveloperConsolePanel() {
     (total, model) => total + model.predictionCount,
     0,
   );
+  const activeProvider = providerStatus.data?.providers.find((item) => item.active);
+  const aiMetrics = providerStatus.data?.metrics ?? {};
+  const metricValue = (key: string) => aiMetrics[key];
 
   const cards = [
     {
@@ -61,14 +66,14 @@ export function DeveloperConsolePanel() {
     },
     {
       label: "Current AI Provider",
-      value: aiSettings.data?.provider ?? "Unavailable",
-      detail: "Configuration only; providers begin in Phase 5",
+      value: providerStatus.data?.settings.provider ?? aiSettings.data?.provider ?? "Unavailable",
+      detail: activeProvider?.details ?? "Runtime provider manager",
       icon: Workflow,
     },
     {
       label: "Current Model",
-      value: aiSettings.data?.model ?? "Unavailable",
-      detail: `Version ${health.data?.version ?? "unknown"}`,
+      value: providerStatus.data?.settings.model ?? aiSettings.data?.model ?? "Unavailable",
+      detail: `Provider status: ${activeProvider?.status ?? "unknown"}`,
       icon: Settings2,
     },
     {
@@ -171,13 +176,49 @@ export function DeveloperConsolePanel() {
       detail: intelligenceStatus.data?.recommendationRuleVersion ?? "Rules not seeded",
       icon: Settings2,
     },
+    {
+      label: "Provider Health",
+      value: activeProvider?.status ?? "Unavailable",
+      detail: `${activeProvider?.latencyMs ?? 0} ms latency`,
+      icon: Activity,
+    },
+    {
+      label: "Token Usage",
+      value: String(metricValue("total_tokens") ?? 0),
+      detail: `${metricValue("metric_count") ?? 0} AI metric events`,
+      icon: Gauge,
+    },
+    {
+      label: "Embedding Model",
+      value: knowledgeStatus.data?.embeddingBackend ?? "Unavailable",
+      detail: knowledgeStatus.data?.embeddingModel ?? "No embeddings",
+      icon: Brain,
+    },
+    {
+      label: "FAISS Index Size",
+      value: knowledgeStatus.data?.faissIndexSize ?? 0,
+      detail: `${knowledgeStatus.data?.chunkCount ?? 0} knowledge chunks`,
+      icon: Database,
+    },
+    {
+      label: "Retrieved Chunks",
+      value: String(metricValue("latest_retrieved_chunks") ?? 0),
+      detail: `Context size ${metricValue("latest_context_size") ?? 0}`,
+      icon: Layers3,
+    },
+    {
+      label: "Provider Switches",
+      value: providerStatus.data?.switchEvents.length ?? 0,
+      detail: "Runtime switching events",
+      icon: Workflow,
+    },
   ];
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Developer Console"
-        description="Operational view for backend health, SQLite, datasets, feature store, ML, NLP, and recommendations."
+        description="Operational view for backend health, SQLite, ML, NLP, AI Gateway, providers, RAG, and recommendations."
       >
         <Badge variant="outline">{health.data?.environment ?? "local"}</Badge>
       </PageHeader>

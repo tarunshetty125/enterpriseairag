@@ -1,10 +1,5 @@
-import { PagePlaceholder } from "@/components/layout/page-placeholder";
+import { AIAssistantPanel } from "@/components/assistant/ai-assistant-panel";
 
 export default function AssistantPage() {
-  return (
-    <PagePlaceholder
-      title="AI Assistant"
-      description="Assistant route prepared for the approved AI gateway and RAG workflows."
-    />
-  );
+  return <AIAssistantPanel />;
 }

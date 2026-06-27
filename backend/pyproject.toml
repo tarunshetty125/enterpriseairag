@@ -6,12 +6,19 @@ readme = { text = "FastAPI foundation for the Enterprise AI Financial Customer I
 requires-python = ">=3.11"
 dependencies = [
   "alembic>=1.13.2",
+  "faiss-cpu>=1.8.0",
   "fastapi>=0.115.0",
+  "httpx>=0.27.2",
   "joblib>=1.5.3",
+  "langchain>=0.3.0",
+  "langchain-community>=0.3.0",
+  "langchain-text-splitters>=0.3.0",
   "numpy>=2.5.0",
   "pandas>=3.0.3",
   "pydantic-settings>=2.6.0",
+  "pypdf>=5.0.0",
   "scikit-learn>=1.9.0",
+  "sentence-transformers>=3.0.0",
   "sqlalchemy>=2.0.32",
   "uvicorn[standard]>=0.30.6",
 ]
@@ -60,4 +67,15 @@ no_implicit_optional = true
 
 [[tool.mypy.overrides]]
 module = ["alembic.*", "joblib.*", "numpy.*", "pandas.*", "sklearn.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "faiss.*",
+  "langchain.*",
+  "langchain_community.*",
+  "langchain_text_splitters.*",
+  "pypdf.*",
+  "sentence_transformers.*",
+]
 ignore_missing_imports = true

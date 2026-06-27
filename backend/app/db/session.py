@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.core.config import get_settings
 from app.db.base import Base
 from app.models import (
+    ai,  # noqa: F401
     canonical,  # noqa: F401
     intelligence,  # noqa: F401
     ml,  # noqa: F401

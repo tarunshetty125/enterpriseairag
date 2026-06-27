@@ -43,6 +43,12 @@ profiles, explainable product recommendations, persistence, API endpoints, and
 connected frontend pages. It still does not implement AI providers, RAG,
 LangChain, FAISS, workflow orchestration, prompt builders, or chat.
 
+Phase 5 adds the enterprise AI platform layer: AI Gateway, runtime provider
+switching, prompt registry, structured context builder, local policy RAG,
+knowledge ingestion, citations, chat memory, and connected AI UI pages. It still
+does not implement customer intelligence reports, workflow orchestration, or
+autonomous agents.
+
 ## Folder Structure
 
 ```text
@@ -91,7 +97,9 @@ frontend/app/
   transaction-intelligence/
   behaviour/
   recommendations/
+  knowledge/
   assistant/
+  prompts/
   developer-console/
   settings/
 ```
@@ -221,12 +229,28 @@ Only these versioned endpoints exist in Phase 1:
 - `GET /api/v1/recommendation-rules`
 - `GET /api/v1/intelligence/status`
 
+## Phase 5 API Surface
+
+- `GET /api/v1/providers`
+- `GET /api/v1/providers/models`
+- `POST /api/v1/providers/switch`
+- `GET /api/v1/providers/status`
+- `PATCH /api/v1/providers/settings`
+- `POST /api/v1/knowledge/ingest`
+- `GET /api/v1/knowledge/documents`
+- `GET /api/v1/knowledge/status`
+- `POST /api/v1/chat`
+- `GET /api/v1/chat/sessions`
+- `GET /api/v1/chat/{session_id}`
+- `GET /api/v1/prompts`
+- `GET /api/v1/prompts/{name}`
+
 ## Roadmap
 
 1. Phase 1: Enterprise foundation, configuration, SQLite, shell UI.
 2. Phase 2: Dataset ingestion, feature engineering, feature store.
 3. Phase 3: ML models, model registry, explainability.
 4. Phase 4: NLP intelligence, behaviour profiles, recommendation engine.
-5. Phase 5: RAG, embeddings, FAISS, AI gateway, Groq/OpenAI switching.
+5. Phase 5: RAG, embeddings, FAISS-compatible index, AI gateway, Groq/OpenAI switching.
 6. Phase 6: Full dashboard, Customer 360, analytics, developer console, settings.
 7. Phase 7: Tests, performance, documentation, demo preparation.
